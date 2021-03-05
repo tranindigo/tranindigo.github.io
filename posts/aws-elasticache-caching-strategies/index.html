@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
+    <meta name="theme-color" content="#2196F3">
+    <title>AWS Elasticache Caching Strategies</title>
+
+    <link href='https://fonts.googleapis.com/css?family=Poiret+One' rel='stylesheet' type='text/css'>
+
+    
+    <link href="/css/font-awesome.min.css" type="text/css" rel="stylesheet">
+    <link href="/css/materialize.min.css" type="text/css" rel="stylesheet">
+    <link href="/css/grid.css" type="text/css" rel="stylesheet">
+    <link href="/css/style.css?v=0.0.1" type="text/css" rel="stylesheet">
+    <link href="/css/post_style.css?v=0.0.1" type="text/css" rel="stylesheet">
+</head>
+<body id="top" class="scrollspy">
+
+
+<div id="loader-wrapper">
+    <div id="loader"></div>
+ 
+    <div class="loader-section section-left"></div>
+    <div class="loader-section section-right"></div>
+ 
+</div>
+
+<div class="wrapper">
+
+
+ <div class="navbar-fixed">
+    <nav id="nav_f" class="default_color" role="navigation">
+        <div class="container-custom">
+            <div class="nav-wrapper">
+            <a href="/index.html" id="logo-container" class="brand-logo">Thomas Tran</a>
+                <ul class="right hide-on-med-and-down">
+                    <li>
+                        <a href="/index.html#articles">
+                            <i class="fa fa-arrow-left" aria-hidden="true" id="backBtn"></i> Back to site
+                        </a>
+                    </li>
+                </ul>
+            <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="mdi-navigation-menu"></i></a>
+            </div>
+        </div>
+    </nav>
+</div>
+
+<a href="javascript:" id="return-to-top">
+  <i class="fa fa-chevron-up"></i>
+</a>
+
+<div class="section scrollspy body-section z-depth-4 post">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m10 offset-m1">
+
+              <div class="post-body card-1">
+                <main role="main">
+                  
+                  <div class="title-header">
+                    <h4 class="post-title">AWS Elasticache Caching Strategies</h4>
+                    <div class="sub-title-header">
+                      <i><time datetime='2020-07-19T00:00:00Z'>
+                        July 19, 2020
+                      </time></i><br>
+                      by Thomas Tran
+                    </div>
+                  </div>
+
+                  <br><br>
+
+                  <hr class="hr-custom" style="margin-top: 5px;"/>
+
+                  <div class="article-body">
+                  <p>Caching strategies dictate how you can populate and access data in the cache. There are two main strategies that AWS Elasticache uses: lazy loading and write-through.</p>
+<h2 id="lazy-loading">Lazy Loading</h2>
+<p>Lazy loading, also known as cache-aside caching, is a popular caching strategy. It works like the following:</p>
+<ol>
+<li>When your application needs to read data from a database, it checks the cache first to determine whether the data is available.</li>
+<li>If the data is available (a cache hit), the cached data is returned.</li>
+<li>If the data is not available (a cache miss), your application queries the database for the data. Your application then updates the cache with the data that is retrieved from the database. The data is then returned.</li>
+</ol>
+<h2 id="write-through">Write-Through</h2>
+<p>A write-through cache strategy basically updates the cache with every database call. It can be summarized like the following:</p>
+<ol>
+<li>Your application updates the primary database.</li>
+<li>Immediately afterward, the data is also updated in the cache.</li>
+</ol>
+<h2 id="so-which-caching-strategy-is-better">So which caching strategy is better?</h2>
+<p>It depends! The write-through strategy ensures that the cache is up-to-date with the database, so there is a better chance that the data will be found in the cache. This will result in better overall application performance because there are fewer database reads and more cache reads. On the other hand, the write-through approach ensures that all data is written to the cache, which means that infrequently-accessed data is also written, which results in a more expensive cache.</p>
+<h2 id="redis-versus-memcached">Redis versus Memcached</h2>
+<p>AWS offers two types of managed caching solutions: Redis and Memcached. Both tools are powerful, fast, in-memory data stores. However, there are important differences that you need to be aware of when choosing between these two.</p>
+<p>First, Memcached is a simple volatile cache server that stores basic key/value pairs where the value has a cap of 1MB. Redis, on the other hand, can store values up to 512MB. However, an important difference is that the data in Redis will persist even when the cache service is restarted. In Memcached the data will not restart.</p>
+<p>Secondly, Memcached can only store String values while Redis is a data structure server that can serve many different data types, such as Strings, Hashes, Lists, Sets, Sorted Sets, and Geo (geographic data).</p>
+<p>Finally, Memcached is multi-threaded and fast while Redis has lots of features but is completely limited to one core since it is based on an event loop.</p>
+<h2 id="summary">Summary</h2>
+<p>So when you need to understand how caches work and the different caching strategies, know that both lazy loading and write-through are used with almost all modern caches. Furthermore, AWS offers a managed cache service, Elasticache, through either Memcached or Redis. The decision to choose either Memcached or Redis can be reduced to key characteristics between the two cache systems. Only you know your application&rsquo;s use case. Choose wisely!</p>
+
+                  </div>
+
+                  
+                </main>
+              </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="page-footer" id="contact_me">
+  <div class="container">
+    <div class="row">
+      <div class="col l6 s12">
+        <h5 class="white-text custom-h5">Contact</h5>
+        <p>
+            <div class="light">
+                Please send all project requests and job opportunities to <a class="footer-link" href="mailto:tranindigo@gmail.com">tranindigo@gmail.com</a>. I hope to hear from you!
+            </div>
+
+            <br />
+            <div class="left">
+              <div class="center">
+              Like my work?&nbsp;&nbsp;
+              <script type='text/javascript' src='https://ko-fi.com/widgets/widget_2.js'></script><script type ='text/javascript'>kofiwidget2.init('Buy Me a Coffee', '#daad86', 'A540JDN');kofiwidget2.draw();</script> 
+            </div>
+            </div>
+        </p>
+      </div>
+      <div class="col l4 offset-l2 s12">
+        <h5 class="white-text custom-h5">Links</h5>
+        <ul class="footer-list">
+            <li>
+              <a class="" href="mailto:tranindigo@gmail.com">
+                  <i class="small fa fa-envelope-o"></i>&emsp;E-mail
+              </a>
+            </li>
+            <li>
+              <a class="" href="https://github.com/tranindigo">
+                  <i class="small fa fa-github-square"></i>&emsp;Github
+              </a>
+            </li>
+
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="footer-copyright">
+    <div class="container">
+      All rights reserved Thomas Tran, 2017.
+    <a class="grey-text text-lighten-4 right" href="#!"></a>
+    </div>
+  </div>
+</footer>
+
+</div>
+
+
+<script type="text/javascript" src="/js/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="/js/materialize.min.js"></script>
+<script type="text/javascript" src="/js/modernizr.js"></script>
+<script type="text/javascript" src='/js/scrollReveal.min.js'></script>
+<script type="text/javascript" src='/js/footer-reveal.min.js'></script>
+<script type="text/javascript" src='/js/grid.js'></script>
+
+<script type="text/javascript" src="/js/init.js"></script>
+<script>
+  $(function() {
+    Grid.init();
+  });
+</script>
+<script>
+  window.sr = new scrollReveal();
+</script>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-142287578-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-142287578-1');
+</script>
+
+</body>
+</html>

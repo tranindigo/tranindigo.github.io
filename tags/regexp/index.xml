@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>regexp on My New Hugo Site</title>
+    <link>http://example.org/tags/regexp/</link>
+    <description>Recent content in regexp on My New Hugo Site</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 19 Jul 2020 00:00:00 +0000</lastBuildDate><atom:link href="http://example.org/tags/regexp/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Ruby&#39;s Regexp Class</title>
+      <link>http://example.org/posts/rubys-regexp-class/</link>
+      <pubDate>Sun, 19 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/posts/rubys-regexp-class/</guid>
+      <description>A regular expression (regex) is a sequence of characters that define how to search and match patterns in a string. It is commonly used in all modern programming languages like Java, Ruby, and Python.
+Ruby uses the class Regexp to store a regex. Regexp are delimited using the following literals and constructor:
+/.../ %r{...} Regexp::new You can call the match() method to check whether a string contains the pattern. For instance:</description>
+    </item>
+    
+  </channel>
+</rss>

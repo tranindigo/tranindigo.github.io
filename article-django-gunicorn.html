@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
+    <meta name="theme-color" content="#2196F3">
+    <title>How to configure a Gunicorn service for a Django app on Ubuntu</title>
+
+    <link href='https://fonts.googleapis.com/css?family=Poiret+One' rel='stylesheet' type='text/css'>
+
+    <!-- CSS  -->
+    <link href="css/font-awesome.min.css" type="text/css" rel="stylesheet">
+    <link href="css/materialize.min.css" type="text/css" rel="stylesheet">
+    <link href="css/grid.css" type="text/css" rel="stylesheet">
+    <link href="css/style.css?v=0.0.1" type="text/css" rel="stylesheet">
+    
+</head>
+<body id="top" class="scrollspy">
+
+<!-- Pre Loader -->
+<div id="loader-wrapper">
+    <div id="loader"></div>
+ 
+    <div class="loader-section section-left"></div>
+    <div class="loader-section section-right"></div>
+ 
+</div>
+
+<div class="wrapper">
+
+<!--Navigation-->
+ <div class="navbar-fixed">
+    <nav id="nav_f" class="default_color" role="navigation">
+        <div class="container-custom">
+            <div class="nav-wrapper">
+            <a href="index.html" id="logo-container" class="brand-logo">Thomas Tran</a>
+                <ul class="right hide-on-med-and-down">
+                    <li>
+                        <a href="index.html#articles">
+                            <i class="fa fa-arrow-left" aria-hidden="true" id="backBtn"></i> Back to site
+                        </a>
+                    </li>
+                </ul>
+            <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="mdi-navigation-menu"></i></a>
+            </div>
+        </div>
+    </nav>
+</div>
+
+<a href="javascript:" id="return-to-top">
+	<i class="fa fa-chevron-up"></i>
+</a>
+
+<div class="section scrollspy body-section z-depth-4 post">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m10 offset-m1">
+
+<div class="post-body card-1">
+<main role="main">
+
+<!-- START ARTICLE -->
+<div class="title-header">
+	<h4 class="post-title">How to configure a Gunicorn service for a Django app on Ubuntu</h4>
+	<div class="sub-title-header">
+		<i>June 5, 2017 12:45pm</i><br>
+		by Thomas Tran
+	</div>
+</div>
+
+<br><br>
+
+<hr class="hr-custom" style="margin-top: 5px;"/>
+
+<p>In this tutorial, I'll go over how to configure Gunicorn on an Ubuntu server. This is meant for both (semi) UNIX beginners and UNIX experts looking to refresh their skills, so I'll try to use terminologies which accommodate both groups.</p>
+
+<p>Gunicorn can be used to serve the app to a port. In this tutorial, however, we'll be serving the app to a socket instead. This prevents many overheads associated with serving the app to a port. In the next tutorial, we'll find out how to use Nginx as a reverse proxy to connect our socket (and thus app) to the <em>external</em> world. We'll also <em>daemonize</em> our gunicorn process using <code>systemd</code> to ensure that the app starts when the machine restarts.</p>
+
+<hr class="hr-custom" style="margin-top: 5px;"/>
+
+<h5 class="subtitle" id="createavirtualenv">Create a <code>virtualenv</code></h5>
+
+<p>To kick things off, we'll update all of our local Ubuntu packages with the command</p>
+
+<pre class="code-block"><code>sudo apt-get update
+</code></pre>
+
+<p>Next, we'll install <code>virtualenv</code>, a package which isolates Python packages in our project from other dependencies system-wide. This will prevent package version conflict and other complications which we (definitely) want to avoid. We use <code>pip</code>, a package manager for Python. You can use other managers, such as <code>yum</code>, but <code>pip</code> seems to be more mainstream and accessible.</p>
+
+<pre class="code-block"><code>pip install virtualenv
+</code></pre>
+
+<p><code>cd</code> into a local directory close to where your project is located. We'll now create the <code>virtualenv</code> itself:</p>
+
+<pre class="code-block"><code>virtualenv djangoapp_env
+</code></pre>
+
+<p>...where <code>djangoapp</code> is the name of the current project.</p>
+
+<p>Assuming you are in the folder that contains <code>djangoapp_env</code>, activate the <code>virtualenv</code> with the following command:</p>
+
+<pre class="code-block"><code>djangoapp_env/bin/activate</code></pre>
+
+<p>Make a note of where your project is located. In this case, our project is located inside <code>/var/www/djangoapp</code>. </p>
+
+<hr class="hr-custom" style="margin-top: 5px;"/>
+
+<h5 class="subtitle" id="installprojectdependencies">Install project dependencies</h5>
+
+<p><code>cd</code> into your project's&ensp;<code>manage.py</code> directory and perform the following command:</p>
+
+<pre class="code-block"><code>pip install -r requirements.txt
+</code></pre>
+
+<p>This will install all dependencies required by your project into the <code>djangoapp_env</code>. Remember, all packages inside the <code>djangoapp_env</code> are isolated from the system-wide packages.</p>
+
+<hr class="hr-custom" style="margin-top: 5px;"/>
+
+<h5 class="subtitle" id="installandtestgunicorn">Install and test <code>gunicorn</code></h5>
+
+<p>Next, install <code>gunicorn</code> with the following command:</p>
+
+<pre class="code-block"><code>pip install gunicorn
+</code></pre>
+
+<p>This will install <code>gunicorn</code> inside your <code>djangoapp_env</code>.</p>
+
+<p>Now that we have set up our Django project, and installed all necessary dependencies, it's time to actually work with <code>gunicorn</code>.</p>
+
+<p>To see that <code>gunicorn</code> works with our Django app, we'll test run it on the command line:</p>
+
+<pre class="code-block"><code>gunicorn --bind 0.0.0.0:8000 djangoapp.wsgi
+</code></pre>
+
+<p>This will by default serve our app on all <code>IPv4</code> addresses on our local machine through port <code>8000</code>. Open a browser at that address to confirm that the app is there. Under the hood, <code>gunicorn</code> invokes the application callable that is exposed by the Django app inside <code>wsgi.py</code> file.</p>
+
+<p>To bind our app to a socket instead of port <code>8000</code>, we can run <code>gunicorn</code> with the following command:</p>
+
+<pre class="code-block"><code>gunicorn --bind unix:/var/www/djangoapp/djangoapp.sock
+</code></pre>
+
+<p>...where <code>/var/www/djangoapp/djangoapp.sock</code> is the location where you want the socket file to be. It can be anywhere on the machine, but it's good to place it somewhere that makes sense!</p>
+
+<hr class="hr-custom" style="margin-top: 5px;"/>
+
+<h5 class="subtitle" id="createthesystemdservice">Create the <code>systemd</code> service</h5>
+
+<p>Now that we've tested that <code>gunicorn</code> works and now that we've learned how to serve our Django app to a socket, we'll create a <em>service</em> which will allow <code>gunicorn</code> to run in the background.</p>
+
+<p><code>cd</code> into <code>/etc/systemd/system/</code>. This directory contains all <code>systemd</code> services. Next, let's create a new service to run our Django app. A service is just a <em>text file</em>, so let's create one with the following command:</p>
+
+<pre class="code-block"><code>sudo vim gunicorn.service
+</code></pre>
+
+<p>This will tell <code>vim</code> (a command-line text editor) to create a new file called <code>gunicorn.service</code> inside the current directory. If you don't have <code>vim</code> or aren't comfortable with it, feel free to use other text editors.</p>
+
+<p>Next, paste the following into the file:</p>
+
+<pre class="code-block"><code>[Unit]
+Description=Djangoapp gunicorn daemon :-)
+After=network.target
+
+[Service]
+User=djangoappuser
+Group=www-data
+WorkingDirectory=/var/www/djangoapp/
+ExecStart=/var/www//djangoapp_env/bin/gunicorn --workers 3 --access-logfile /var/www/logs/djangoapp-access.log --error-logfile /var/www/logs/djangoapp-error.log --bind unix:/var/www/djangoapp/djangoapp.sock djangoapp.wsgi:application
+
+[Install]
+WantedBy=multi-user.target
+</code></pre>
+
+<p> Notice that every path inside the service file is <i>absolute</i> not <i>relative</i>. Save this file and then quit (<code>ESC</code>, then the command <code>:wq</code>).</p>
+
+<hr class="hr-custom" style="margin-top: 5px;"/>
+
+<h5 class="subtitle" id="runtheservice">Run the service</h5>
+
+<p>Then we can start the <code>gunicorn</code> service with the following commands:</p>
+
+<pre class="code-block"><code>sudo systemctl start gunicorn
+sudo systemctl enable gunicorn
+</code></pre>
+
+<p>This will start <code>gunicorn</code> in the background. In the next tutorial, we'll find out how to use <code>nginx</code> as a reverse proxy to connect our <code>socket</code> to the external world.</p>
+
+<hr class="hr-custom" style="margin-top: 5px;"/>
+
+<h5 class="subtitle" id="troubleshooting">Useful commands and troubleshooting</h5>
+
+<p>When working with <code>systemctl</code>, some systems allow you to use the <code>service</code> command to control services. In our case, the following comands are available to us:
+</p>
+
+<pre class="code-block">
+<code>service gunicorn start</code>
+<code>service gunicorn stop</code>
+<code>service gunicorn restart</code> (which is just really a shortcut for the two commands above)
+</pre>
+
+<p>Also, <code>systemd</code> unit files (such as our service file above) need to be <i>reloaded</i> every time they are changed. This will reload all unit files and recreate the daemon. To reload the service file, use the following command:</p>
+
+<pre class="code-block">
+<code>systemctl daemon-reload</code>
+</pre>
+
+<p>You'll need to perform an additional <code>service gunicorn restart</code> if you want to restart the service itself.</p>
+
+<p>
+If you run into permission errors, you probably have insufficient rights to run gunicorn with the <code>djangoappuser</code>. To fix this, change file permissions of your project to allow <code>djangoappuser</code> access.
+</p>
+
+<!-- END ARTICLE -->
+</main>
+</div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="page-footer" id="contact_me">
+  <div class="container">
+    <div class="row">
+      <div class="col l6 s12">
+        <h5 class="white-text custom-h5">Contact</h5>
+        <p>
+            <div class="light">
+                Please send all project requests and job opportunities to <a class="footer-link" href="mailto:tranindigo@gmail.com">tranindigo@gmail.com</a>. I hope to hear from you!
+            </div>
+
+            <br />
+            <div class="left">
+            	<div class="center">
+      				Like my work?&nbsp;&nbsp;
+      				<script type='text/javascript' src='https://ko-fi.com/widgets/widget_2.js'></script><script type ='text/javascript'>kofiwidget2.init('Buy Me a Coffee', '#daad86', 'A540JDN');kofiwidget2.draw();</script> 
+      			</div>
+            </div>
+        </p>
+      </div>
+      <div class="col l4 offset-l2 s12">
+        <h5 class="white-text custom-h5">Links</h5>
+        <ul class="footer-list">
+          	<li>
+	          	<a class="" href="mailto:tranindigo@gmail.com">
+	                <i class="small fa fa-envelope-o"></i>&emsp;E-mail
+	            </a>
+            </li>
+            <li>
+	            <a class="" href="https://github.com/tranindigo">
+	                <i class="small fa fa-github-square"></i>&emsp;Github
+	            </a>
+            </li>
+
+
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="footer-copyright">
+    <div class="container">
+    	All rights reserved Thomas Tran, 2017.
+    <a class="grey-text text-lighten-4 right" href="#!"></a>
+    </div>
+  </div>
+</footer>
+
+</div>
+
+<!--  Scripts-->
+<script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="js/materialize.min.js"></script>
+<script type="text/javascript" src="js/modernizr.js"></script>
+<script type="text/javascript" src='js/scrollReveal.min.js'></script>
+<script type="text/javascript" src='js/footer-reveal.min.js'></script>
+<script type="text/javascript" src='js/grid.js'></script>
+
+<script type="text/javascript" src="js/init.js"></script>
+<script>
+	$(function() {
+		Grid.init();
+	});
+</script>
+<script>
+  window.sr = new scrollReveal();
+</script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-142287578-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-142287578-1');
+</script>
+
+
+</body>
+</html>

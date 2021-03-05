@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>write-through on My New Hugo Site</title>
+    <link>http://example.org/tags/write-through/</link>
+    <description>Recent content in write-through on My New Hugo Site</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 19 Jul 2020 00:00:00 +0000</lastBuildDate><atom:link href="http://example.org/tags/write-through/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>AWS Elasticache Caching Strategies</title>
+      <link>http://example.org/posts/aws-elasticache-caching-strategies/</link>
+      <pubDate>Sun, 19 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/posts/aws-elasticache-caching-strategies/</guid>
+      <description>Caching strategies dictate how you can populate and access data in the cache. There are two main strategies that AWS Elasticache uses: lazy loading and write-through.
+Lazy Loading Lazy loading, also known as cache-aside caching, is a popular caching strategy. It works like the following:
+ When your application needs to read data from a database, it checks the cache first to determine whether the data is available. If the data is available (a cache hit), the cached data is returned.</description>
+    </item>
+    
+  </channel>
+</rss>
