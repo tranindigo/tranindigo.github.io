@@ -2,332 +2,332 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on My New Hugo Site</title>
-    <link>http://example.org/tags/</link>
+    <link>https://tranindigo.github.io/tags/</link>
     <description>Recent content in Tags on My New Hugo Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 04 Mar 2021 00:00:00 +0000</lastBuildDate><atom:link href="http://example.org/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 04 Mar 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://tranindigo.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>sql-injection</title>
-      <link>http://example.org/tags/sql-injection/</link>
+      <link>https://tranindigo.github.io/tags/sql-injection/</link>
       <pubDate>Thu, 04 Mar 2021 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/sql-injection/</guid>
+      <guid>https://tranindigo.github.io/tags/sql-injection/</guid>
       <description></description>
     </item>
     
     <item>
       <title>stored-procedure</title>
-      <link>http://example.org/tags/stored-procedure/</link>
+      <link>https://tranindigo.github.io/tags/stored-procedure/</link>
       <pubDate>Thu, 04 Mar 2021 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/stored-procedure/</guid>
+      <guid>https://tranindigo.github.io/tags/stored-procedure/</guid>
       <description></description>
     </item>
     
     <item>
       <title>angular-8</title>
-      <link>http://example.org/tags/angular-8/</link>
+      <link>https://tranindigo.github.io/tags/angular-8/</link>
       <pubDate>Wed, 17 Feb 2021 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/angular-8/</guid>
+      <guid>https://tranindigo.github.io/tags/angular-8/</guid>
       <description></description>
     </item>
     
     <item>
       <title>javascript</title>
-      <link>http://example.org/tags/javascript/</link>
+      <link>https://tranindigo.github.io/tags/javascript/</link>
       <pubDate>Wed, 17 Feb 2021 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/javascript/</guid>
+      <guid>https://tranindigo.github.io/tags/javascript/</guid>
       <description></description>
     </item>
     
     <item>
       <title>spa</title>
-      <link>http://example.org/tags/spa/</link>
+      <link>https://tranindigo.github.io/tags/spa/</link>
       <pubDate>Wed, 17 Feb 2021 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/spa/</guid>
+      <guid>https://tranindigo.github.io/tags/spa/</guid>
       <description></description>
     </item>
     
     <item>
       <title>memoization</title>
-      <link>http://example.org/tags/memoization/</link>
+      <link>https://tranindigo.github.io/tags/memoization/</link>
       <pubDate>Fri, 04 Sep 2020 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/memoization/</guid>
+      <guid>https://tranindigo.github.io/tags/memoization/</guid>
       <description></description>
     </item>
     
     <item>
       <title>ruby</title>
-      <link>http://example.org/tags/ruby/</link>
+      <link>https://tranindigo.github.io/tags/ruby/</link>
       <pubDate>Fri, 04 Sep 2020 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/ruby/</guid>
+      <guid>https://tranindigo.github.io/tags/ruby/</guid>
       <description></description>
     </item>
     
     <item>
       <title>alarms</title>
-      <link>http://example.org/tags/alarms/</link>
+      <link>https://tranindigo.github.io/tags/alarms/</link>
       <pubDate>Mon, 31 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/alarms/</guid>
+      <guid>https://tranindigo.github.io/tags/alarms/</guid>
       <description></description>
     </item>
     
     <item>
       <title>aws-cloudwatch</title>
-      <link>http://example.org/tags/aws-cloudwatch/</link>
+      <link>https://tranindigo.github.io/tags/aws-cloudwatch/</link>
       <pubDate>Mon, 31 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/aws-cloudwatch/</guid>
+      <guid>https://tranindigo.github.io/tags/aws-cloudwatch/</guid>
       <description></description>
     </item>
     
     <item>
       <title>iops</title>
-      <link>http://example.org/tags/iops/</link>
+      <link>https://tranindigo.github.io/tags/iops/</link>
       <pubDate>Mon, 31 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/iops/</guid>
+      <guid>https://tranindigo.github.io/tags/iops/</guid>
       <description></description>
     </item>
     
     <item>
       <title>kibana</title>
-      <link>http://example.org/tags/kibana/</link>
+      <link>https://tranindigo.github.io/tags/kibana/</link>
       <pubDate>Mon, 31 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/kibana/</guid>
+      <guid>https://tranindigo.github.io/tags/kibana/</guid>
       <description></description>
     </item>
     
     <item>
       <title>logging</title>
-      <link>http://example.org/tags/logging/</link>
+      <link>https://tranindigo.github.io/tags/logging/</link>
       <pubDate>Mon, 31 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/logging/</guid>
+      <guid>https://tranindigo.github.io/tags/logging/</guid>
       <description></description>
     </item>
     
     <item>
       <title>cloudtrail</title>
-      <link>http://example.org/tags/cloudtrail/</link>
+      <link>https://tranindigo.github.io/tags/cloudtrail/</link>
       <pubDate>Tue, 25 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/cloudtrail/</guid>
+      <guid>https://tranindigo.github.io/tags/cloudtrail/</guid>
       <description></description>
     </item>
     
     <item>
       <title>encryption</title>
-      <link>http://example.org/tags/encryption/</link>
+      <link>https://tranindigo.github.io/tags/encryption/</link>
       <pubDate>Tue, 25 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/encryption/</guid>
+      <guid>https://tranindigo.github.io/tags/encryption/</guid>
       <description></description>
     </item>
     
     <item>
       <title>keys</title>
-      <link>http://example.org/tags/keys/</link>
+      <link>https://tranindigo.github.io/tags/keys/</link>
       <pubDate>Tue, 25 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/keys/</guid>
+      <guid>https://tranindigo.github.io/tags/keys/</guid>
       <description></description>
     </item>
     
     <item>
       <title>kms</title>
-      <link>http://example.org/tags/kms/</link>
+      <link>https://tranindigo.github.io/tags/kms/</link>
       <pubDate>Tue, 25 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/kms/</guid>
+      <guid>https://tranindigo.github.io/tags/kms/</guid>
       <description></description>
     </item>
     
     <item>
       <title>compressing</title>
-      <link>http://example.org/tags/compressing/</link>
+      <link>https://tranindigo.github.io/tags/compressing/</link>
       <pubDate>Thu, 20 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/compressing/</guid>
+      <guid>https://tranindigo.github.io/tags/compressing/</guid>
       <description></description>
     </item>
     
     <item>
       <title>development</title>
-      <link>http://example.org/tags/development/</link>
+      <link>https://tranindigo.github.io/tags/development/</link>
       <pubDate>Thu, 20 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/development/</guid>
+      <guid>https://tranindigo.github.io/tags/development/</guid>
       <description></description>
     </item>
     
     <item>
       <title>front-end</title>
-      <link>http://example.org/tags/front-end/</link>
+      <link>https://tranindigo.github.io/tags/front-end/</link>
       <pubDate>Thu, 20 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/front-end/</guid>
+      <guid>https://tranindigo.github.io/tags/front-end/</guid>
       <description></description>
     </item>
     
     <item>
       <title>http2</title>
-      <link>http://example.org/tags/http2/</link>
+      <link>https://tranindigo.github.io/tags/http2/</link>
       <pubDate>Thu, 20 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/http2/</guid>
+      <guid>https://tranindigo.github.io/tags/http2/</guid>
       <description></description>
     </item>
     
     <item>
       <title>minify</title>
-      <link>http://example.org/tags/minify/</link>
+      <link>https://tranindigo.github.io/tags/minify/</link>
       <pubDate>Thu, 20 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/minify/</guid>
+      <guid>https://tranindigo.github.io/tags/minify/</guid>
       <description></description>
     </item>
     
     <item>
       <title>ssl</title>
-      <link>http://example.org/tags/ssl/</link>
+      <link>https://tranindigo.github.io/tags/ssl/</link>
       <pubDate>Thu, 20 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/ssl/</guid>
+      <guid>https://tranindigo.github.io/tags/ssl/</guid>
       <description></description>
     </item>
     
     <item>
       <title>tls</title>
-      <link>http://example.org/tags/tls/</link>
+      <link>https://tranindigo.github.io/tags/tls/</link>
       <pubDate>Thu, 20 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/tls/</guid>
+      <guid>https://tranindigo.github.io/tags/tls/</guid>
       <description></description>
     </item>
     
     <item>
       <title>elasticache</title>
-      <link>http://example.org/tags/elasticache/</link>
+      <link>https://tranindigo.github.io/tags/elasticache/</link>
       <pubDate>Sun, 19 Jul 2020 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/elasticache/</guid>
+      <guid>https://tranindigo.github.io/tags/elasticache/</guid>
       <description></description>
     </item>
     
     <item>
       <title>lazy-loading</title>
-      <link>http://example.org/tags/lazy-loading/</link>
+      <link>https://tranindigo.github.io/tags/lazy-loading/</link>
       <pubDate>Sun, 19 Jul 2020 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/lazy-loading/</guid>
+      <guid>https://tranindigo.github.io/tags/lazy-loading/</guid>
       <description></description>
     </item>
     
     <item>
       <title>memcached</title>
-      <link>http://example.org/tags/memcached/</link>
+      <link>https://tranindigo.github.io/tags/memcached/</link>
       <pubDate>Sun, 19 Jul 2020 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/memcached/</guid>
+      <guid>https://tranindigo.github.io/tags/memcached/</guid>
       <description></description>
     </item>
     
     <item>
       <title>rails</title>
-      <link>http://example.org/tags/rails/</link>
+      <link>https://tranindigo.github.io/tags/rails/</link>
       <pubDate>Sun, 19 Jul 2020 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/rails/</guid>
+      <guid>https://tranindigo.github.io/tags/rails/</guid>
       <description></description>
     </item>
     
     <item>
       <title>redis</title>
-      <link>http://example.org/tags/redis/</link>
+      <link>https://tranindigo.github.io/tags/redis/</link>
       <pubDate>Sun, 19 Jul 2020 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/redis/</guid>
+      <guid>https://tranindigo.github.io/tags/redis/</guid>
       <description></description>
     </item>
     
     <item>
       <title>regexp</title>
-      <link>http://example.org/tags/regexp/</link>
+      <link>https://tranindigo.github.io/tags/regexp/</link>
       <pubDate>Sun, 19 Jul 2020 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/regexp/</guid>
+      <guid>https://tranindigo.github.io/tags/regexp/</guid>
       <description></description>
     </item>
     
     <item>
       <title>write-through</title>
-      <link>http://example.org/tags/write-through/</link>
+      <link>https://tranindigo.github.io/tags/write-through/</link>
       <pubDate>Sun, 19 Jul 2020 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/write-through/</guid>
+      <guid>https://tranindigo.github.io/tags/write-through/</guid>
       <description></description>
     </item>
     
     <item>
       <title>access-contro-list</title>
-      <link>http://example.org/tags/access-contro-list/</link>
+      <link>https://tranindigo.github.io/tags/access-contro-list/</link>
       <pubDate>Sat, 18 Jul 2020 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/access-contro-list/</guid>
+      <guid>https://tranindigo.github.io/tags/access-contro-list/</guid>
       <description></description>
     </item>
     
     <item>
       <title>devops</title>
-      <link>http://example.org/tags/devops/</link>
+      <link>https://tranindigo.github.io/tags/devops/</link>
       <pubDate>Sat, 18 Jul 2020 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/devops/</guid>
+      <guid>https://tranindigo.github.io/tags/devops/</guid>
       <description></description>
     </item>
     
     <item>
       <title>nat-gateway</title>
-      <link>http://example.org/tags/nat-gateway/</link>
+      <link>https://tranindigo.github.io/tags/nat-gateway/</link>
       <pubDate>Sat, 18 Jul 2020 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/nat-gateway/</guid>
+      <guid>https://tranindigo.github.io/tags/nat-gateway/</guid>
       <description></description>
     </item>
     
     <item>
       <title>route-table</title>
-      <link>http://example.org/tags/route-table/</link>
+      <link>https://tranindigo.github.io/tags/route-table/</link>
       <pubDate>Sat, 18 Jul 2020 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/route-table/</guid>
+      <guid>https://tranindigo.github.io/tags/route-table/</guid>
       <description></description>
     </item>
     
     <item>
       <title>subnet</title>
-      <link>http://example.org/tags/subnet/</link>
+      <link>https://tranindigo.github.io/tags/subnet/</link>
       <pubDate>Sat, 18 Jul 2020 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/subnet/</guid>
+      <guid>https://tranindigo.github.io/tags/subnet/</guid>
       <description></description>
     </item>
     
     <item>
       <title>vpc</title>
-      <link>http://example.org/tags/vpc/</link>
+      <link>https://tranindigo.github.io/tags/vpc/</link>
       <pubDate>Sat, 18 Jul 2020 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/tags/vpc/</guid>
+      <guid>https://tranindigo.github.io/tags/vpc/</guid>
       <description></description>
     </item>
     

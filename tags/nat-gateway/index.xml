@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>nat-gateway on My New Hugo Site</title>
-    <link>http://example.org/tags/nat-gateway/</link>
+    <link>https://tranindigo.github.io/tags/nat-gateway/</link>
     <description>Recent content in nat-gateway on My New Hugo Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 18 Jul 2020 00:00:00 +0000</lastBuildDate><atom:link href="http://example.org/tags/nat-gateway/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 18 Jul 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://tranindigo.github.io/tags/nat-gateway/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Basics of Amazon VPC and Subnets</title>
-      <link>http://example.org/posts/basics-of-amazon-vpc-and-subnets/</link>
+      <link>https://tranindigo.github.io/posts/basics-of-amazon-vpc-and-subnets/</link>
       <pubDate>Sat, 18 Jul 2020 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/posts/basics-of-amazon-vpc-and-subnets/</guid>
+      <guid>https://tranindigo.github.io/posts/basics-of-amazon-vpc-and-subnets/</guid>
       <description>Amazon Virtual Private Cloud (VPC) is a private data center within the AWS infrastructure. You are able to decide the range of network IPv4 address range when you create the VPC. There is no way to change your VPC&amp;rsquo;s network block after it has been created.
 A VPC consists of many components. A few that will be highlighted in this article are: subnets, Internet Gateway, NAT Gateway, Route Table, and Network Access List.</description>
     </item>
