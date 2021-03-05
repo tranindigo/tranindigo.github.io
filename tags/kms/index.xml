@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>kms on My New Hugo Site</title>
-    <link>https://tranindigo.github.io/tags/kms/</link>
+    <link>http://example.org/tags/kms/</link>
     <description>Recent content in kms on My New Hugo Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 25 Aug 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://tranindigo.github.io/tags/kms/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 25 Aug 2020 00:00:00 +0000</lastBuildDate><atom:link href="http://example.org/tags/kms/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>An introduction to AWS KMS: Envelope Encryption</title>
-      <link>https://tranindigo.github.io/posts/an-introduction-to-aws-kms/</link>
+      <link>http://example.org/posts/an-introduction-to-aws-kms/</link>
       <pubDate>Tue, 25 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://tranindigo.github.io/posts/an-introduction-to-aws-kms/</guid>
+      <guid>http://example.org/posts/an-introduction-to-aws-kms/</guid>
       <description>AWS Key Management Service (KMS) is a fully-managed service allows you to create and manage cryptographic keys and control their use across a wide range of AWS services. This is useful because it allows you to centrally manage the encryption keys that control access to your data.
 Features KMS is durable to make sure that your keys are never lost. KMS stores multiple copies of encrypted versions of your keys in systems that are designed for 99.</description>
     </item>

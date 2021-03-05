@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>sql on My New Hugo Site</title>
-    <link>https://tranindigo.github.io/categories/sql/</link>
+    <link>http://example.org/categories/sql/</link>
     <description>Recent content in sql on My New Hugo Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 04 Mar 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://tranindigo.github.io/categories/sql/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 04 Mar 2021 00:00:00 +0000</lastBuildDate><atom:link href="http://example.org/categories/sql/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Stored Procedures: Our Friendnemy in SQL</title>
-      <link>https://tranindigo.github.io/posts/stored-procedures-our-friendnemy/</link>
+      <link>http://example.org/posts/stored-procedures-our-friendnemy/</link>
       <pubDate>Thu, 04 Mar 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://tranindigo.github.io/posts/stored-procedures-our-friendnemy/</guid>
+      <guid>http://example.org/posts/stored-procedures-our-friendnemy/</guid>
       <description>A stored procedure is a SQL script that can be stored on the database server and called many times. Stored procedures have been falling out of favor for many years, in favor of Object-Relational-Mappers (ORM) like Hibernate, Entity Framework, and ActiveRecord. However, there are times when it makes sense to use them as part of your development process, such as working with legacy systems or with multiple systems that rely on the same database.</description>
     </item>
     
