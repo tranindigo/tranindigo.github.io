@@ -64,8 +64,9 @@
                     <div class="sub-title-header">
                       <i><time datetime='{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}'>
                         {{ .Date.Format "January 02, 2006" }}
-                      </time></i><br>
-                      by Thomas Tran
+                      </time></i>
+                      <br>
+                      <div>by Thomas Tran</div>
                     </div>
                   </div>
 
@@ -125,7 +126,7 @@
   </div>
   <div class="footer-copyright">
     <div class="container">
-      All rights reserved Thomas Tran, {{ .Date.Format "2006" }}.
+      All rights reserved Thomas Tran, <script>document.write(new Date().getFullYear())</script>.
     <a class="grey-text text-lighten-4 right" href="#!"></a>
     </div>
   </div>
