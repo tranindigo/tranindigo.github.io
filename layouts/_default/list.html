@@ -1,0 +1,12 @@
+{{ define "list_of_posts" }}
+
+  <div>testadfasdf</div>
+  
+  {{range .Pages }}
+  <li class="collection-item">
+    <a class="article-link" href="{{.Permalink}}">{{.Title}}</a>
+  </li>
+  {{end}}
+
+
+{{ end }}

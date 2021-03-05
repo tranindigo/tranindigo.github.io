@@ -1,0 +1,10 @@
+{{ define "main" }}
+{{.Content}}
+<ul class="all-posts">
+  {{range .Site.RegularPages}}
+  <li class="collection-item">
+    <a class="article-link" href="{{.Permalink}}">{{.Title}}</a>
+  </li>
+  {{end}}
+</ul>
+{{ end }}
