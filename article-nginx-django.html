@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
+    <meta name="theme-color" content="#2196F3">
+    <title>How to configure nginx as a reverse proxy to a gunicorn socket</title>
+
+    <link href='https://fonts.googleapis.com/css?family=Poiret+One' rel='stylesheet' type='text/css'>
+
+    <!-- CSS  -->
+    <link href="css/font-awesome.min.css" type="text/css" rel="stylesheet">
+    <link href="css/materialize.min.css" type="text/css" rel="stylesheet">
+    <link href="css/grid.css" type="text/css" rel="stylesheet">
+    <link href="css/style.css?v=0.0.1" type="text/css" rel="stylesheet">
+    
+</head>
+<body id="top" class="scrollspy">
+
+<!-- Pre Loader -->
+<div id="loader-wrapper">
+    <div id="loader"></div>
+ 
+    <div class="loader-section section-left"></div>
+    <div class="loader-section section-right"></div>
+ 
+</div>
+
+<div class="wrapper">
+
+<!--Navigation-->
+ <div class="navbar-fixed">
+    <nav id="nav_f" class="default_color" role="navigation">
+        <div class="container-custom">
+            <div class="nav-wrapper">
+            <a href="index.html" id="logo-container" class="brand-logo">Thomas Tran</a>
+                <ul class="right hide-on-med-and-down">
+                    <li>
+                        <a href="index.html#articles">
+                            <i class="fa fa-arrow-left" aria-hidden="true" id="backBtn"></i> Back to site
+                        </a>
+                    </li>
+                </ul>
+            <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="mdi-navigation-menu"></i></a>
+            </div>
+        </div>
+    </nav>
+</div>
+
+<a href="javascript:" id="return-to-top">
+	<i class="fa fa-chevron-up"></i>
+</a>
+
+<div class="section scrollspy body-section z-depth-4 post">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m10 offset-m1">
+
+<div class="post-body card-1">
+<main role="main">
+
+<!-- START ARTICLE -->
+<div class="title-header">
+	<h4 class="post-title">How to configure nginx as a reverse proxy to a gunicorn socket</h4>
+	<div class="sub-title-header">
+		<i>June 10, 2017 08:43am</i><br>
+		by Thomas Tran
+	</div>
+</div>
+
+<br><br>
+
+<hr class="hr-custom" style="margin-top: 5px;"/>
+
+<p>In the previous tutorial, we learned how to configure <code>gunicorn</code> to run our <code>WSGI</code> (<code>Django</code>) app to a socket. In this tutorial, we'll use <code>nginx</code> as a reverse-proxy to relay external web requests to that socket. We'll  also configure nginx to serve static files.</p>
+
+<p><i>Why nginx?</i> A reverse proxy server sits behind a firewall in a private machine a directs client requests to the appropriate backend server. In our case, <code>nginx</code> will forward external requests to the <code>gunicorn</code> socket. There are many reasons why <code>nginx</code> is a good choice. Firstly, by intercepting requests toward the backend, it protects the identities of the backend. For instance, <code>nginx</code> buffers slow clients which, among other things, prevents denial-of-service attacks from malicious parties. Secondly, <code>nginx</code> can compress inbound and outbound data, so it speeds up the flow of traffic between clients and servers. Thirdly, it helps with <i>load balancing</i>, distributing client requests across a group of servers to maximizee speed and capacity utilization. This will be helpful with high traffic sites and multiple machines will be necessary to handle that many requests.</p>
+
+<hr class="hr-custom" style="margin-top: 5px;"/>
+
+<h5 class="subtitle" id="createavirtualenv">Install nginx</h5>
+
+<p>Firstly, we need to install <code>nginx</code>. Run the following command to install it:</p>
+
+<pre class="code-block">
+<code>sudo apt-get update
+sudo apt-get install nginx</code></pre>
+
+
+<p><code>nginx</code> will by default have its config files in the directory <code>/etc/nginx/</code>. The file <code>/etc/nginx/nginx.conf</code> contains default global <code>nginx</code> configs.
+
+<hr class="hr-custom" style="margin-top: 5px;"/>
+
+<h5 class="subtitle" id="createavirtualenv">Configuring nginx</h5>
+
+<p>We'll create a additional <code>server</code> block which will tell nginx how to direct external requests to our <code>gunicorn</code> socket.</p>
+
+<p>The directory <code>/etc/nginx/sites-available/</code>  contains additional configs servers on the machine. We'll create a file, which will contain our <code>server</code> block:</p>
+
+<pre class="code-block"><code>sudo vim /etc/nginx/sites-available/djangoapp</code></pre>
+
+<p>Now paste the following into that file and then save:</p>
+
+<pre class="code-block"><code>
+server {
+	listen 80;
+	server_name [your domain name or public ip];
+
+	location /static/ {
+		root /var/www/djangoapp/static/;
+	}
+
+	location / {
+		include proxy_params;
+		proxy_pass http://unix:/var/www/djangoapp/djangoapp.sock;
+	}
+}
+</code></pre>
+
+<p>In the file above, the directive <code>listen 80</code> sets the port on which the server will accept requests. It will list to  to port <code>80</code> by default for external requests.</p>
+
+<p>The <code>server_name</code> directive specifies which server block is used for a given request. For instance, if you are serving your app to an IP, input your machine's public IP. If you are serving your app to a domain name, such as <code>www.example.com</code>, input that instead.</p>
+
+<p>The directive <code>location /static/</code> specifies where our static files are located. If you are serving to a domain name, static files will be served as <code>www.example.com/static/example.css</code>, for instance.</p>
+
+<p>Finally, the <code>location /</code> directive tells nginx to relay any other requests in this <code>server</code> block to our socket, meaning that all other requests besides static files will be directed toward the socket, which will then be picked up by gunicorn and then processed. <code>proxy_params</code> contains somes useful header parameters which we definitely want to use.</p>
+
+<hr class="hr-custom" style="margin-top: 5px;"/>
+
+<h5 class="subtitle" id="createavirtualenv">Enabling and starting nginx</h5>
+
+<p>To enable these new configs, we'll connect this file to the <code>sites-enabled</code> directory. To do so, input the following commands:</p>
+
+<pre class="code-block"><code>sudo ln -s /etc/nginx/sites-available/djangoapp /etc/nginx/sites-enabled</code></pre>
+
+<p>Then, restart <code>nginx</code> with the command:</p>
+
+<pre class="code-block"><code>service nginx restart</code></pre>
+
+<hr class="hr-custom" style="margin-top: 5px;"/>
+
+<h5 class="subtitle" id="troubleshooting">Useful commands and troubleshooting</h5>
+
+<p>When working with <code>systemctl</code>, some systems allow you to use the <code>service</code> command to control services. In our case, the following comands are available to us:
+</p>
+
+<pre class="code-block">
+<code>service nginx start</code>
+<code>service nginx stop</code>
+<code>service nginx restart</code>
+</pre>
+
+<p>
+If you run into permission errors, you probably have insufficient rights to run <code>nginx</code> with the <code>djangoappuser</code>. <code>ngix</code> also uses the security group <code>www-data</code>, so make sure to add <code>djangoappuser</code> to <code>www-data</code>. To do so, you can do the following:
+</p>
+
+<pre class="code-block"><code>sudo useradd -g www-data djangoappuser</code></pre>
+
+<!-- END ARTICLE -->
+</main>
+</div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="page-footer" id="contact_me">
+  <div class="container">
+    <div class="row">
+      <div class="col l6 s12">
+        <h5 class="white-text custom-h5">Contact</h5>
+        <p>
+            <div class="light">
+                Please send all project requests and job opportunities to <a class="footer-link" href="mailto:tranindigo@gmail.com">tranindigo@gmail.com</a>. I hope to hear from you!
+            </div>
+
+            <br />
+            <div class="left">
+            	<div class="center">
+      				Like my work?&nbsp;&nbsp;
+      				<script type='text/javascript' src='https://ko-fi.com/widgets/widget_2.js'></script><script type ='text/javascript'>kofiwidget2.init('Buy Me a Coffee', '#daad86', 'A540JDN');kofiwidget2.draw();</script> 
+      			</div>
+            </div>
+        </p>
+      </div>
+      <div class="col l4 offset-l2 s12">
+        <h5 class="white-text custom-h5">Links</h5>
+        <ul class="footer-list">
+          	<li>
+	          	<a class="" href="mailto:tranindigo@gmail.com">
+	                <i class="small fa fa-envelope-o"></i>&emsp;E-mail
+	            </a>
+            </li>
+            <li>
+	            <a class="" href="https://github.com/tranindigo">
+	                <i class="small fa fa-github-square"></i>&emsp;Github
+	            </a>
+            </li>
+
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="footer-copyright">
+    <div class="container">
+    	All rights reserved Thomas Tran, <script>document.write(new Date().getFullYear())</script>.
+    <a class="grey-text text-lighten-4 right" href="#!"></a>
+    </div>
+  </div>
+</footer>
+
+</div>
+
+<!--  Scripts-->
+<script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="js/materialize.min.js"></script>
+<script type="text/javascript" src="js/modernizr.js"></script>
+<script type="text/javascript" src='js/scrollReveal.min.js'></script>
+<script type="text/javascript" src='js/footer-reveal.min.js'></script>
+<script type="text/javascript" src='js/grid.js'></script>
+
+<script type="text/javascript" src="js/init.js"></script>
+<script>
+	$(function() {
+		Grid.init();
+	});
+</script>
+<script>
+  window.sr = new scrollReveal();
+</script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-142287578-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-142287578-1');
+</script>
+
+</body>
+</html>
