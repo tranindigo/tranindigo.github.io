@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
+    <meta name="theme-color" content="#2196F3">
+    <title>AWS CloudWatch: Monitoring &amp; Alarms</title>
+
+    <link href='https://fonts.googleapis.com/css?family=Poiret+One' rel='stylesheet' type='text/css'>
+
+    
+    <link href="/css/font-awesome.min.css" type="text/css" rel="stylesheet">
+    <link href="/css/materialize.min.css" type="text/css" rel="stylesheet">
+    <link href="/css/grid.css" type="text/css" rel="stylesheet">
+    <link href="/css/style.css?v=0.0.1" type="text/css" rel="stylesheet">
+    <link href="/css/post_style.css?v=0.0.1" type="text/css" rel="stylesheet">
+</head>
+<body id="top" class="scrollspy">
+
+
+<div id="loader-wrapper">
+    <div id="loader"></div>
+ 
+    <div class="loader-section section-left"></div>
+    <div class="loader-section section-right"></div>
+ 
+</div>
+
+<div class="wrapper">
+
+
+ <div class="navbar-fixed">
+    <nav id="nav_f" class="default_color" role="navigation">
+        <div class="container-custom">
+            <div class="nav-wrapper">
+            <a href="/index.html" id="logo-container" class="brand-logo">Thomas Tran</a>
+                <ul class="right hide-on-med-and-down">
+                    <li>
+                        <a href="/index.html#articles">
+                            <i class="fa fa-arrow-left" aria-hidden="true" id="backBtn"></i> Back to site
+                        </a>
+                    </li>
+                </ul>
+            <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="mdi-navigation-menu"></i></a>
+            </div>
+        </div>
+    </nav>
+</div>
+
+<a href="javascript:" id="return-to-top">
+  <i class="fa fa-chevron-up"></i>
+</a>
+
+<div class="section scrollspy body-section z-depth-4 post">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m10 offset-m1">
+
+              <div class="post-body card-1">
+                <main role="main">
+                  
+                  <div class="title-header">
+                    <h4 class="post-title">AWS CloudWatch: Monitoring &amp; Alarms</h4>
+                    <div class="sub-title-header">
+                      <i><time datetime='2020-08-31T00:00:00Z'>
+                        August 31, 2020
+                      </time></i>
+                      <br>
+                      <div>by Thomas Tran</div>
+                    </div>
+                  </div>
+
+                  <br><br>
+
+                  <hr class="hr-custom" style="margin-top: 5px;"/>
+
+                  <div class="article-body">
+                  <p>AWS CloudWatch is a fully-managed service for monitoring AWS services and workloads. For websites, apps, and microservices that are entirely hosted on AWS, this is a great cloud logging solution.</p>
+<p>As a fully-managed service, it is very easy to manage log retention periods, which can be configured on a per-group basis. By default, CloudWatch stores the log data indefinitely. Another advantage of CloudWatch is that it allows you to easily monitor host performance of AWS services. For instance, if you install the CloudWatch Agent on an EC2 instance, this will allow you to easily replace an entire third-party monitoring stack. CloudWatch receives and provides metrics for all Amazon EC2 instances and should work with any operating system currently supported by the EC2 service. Finally, CloudWatch is flexible enough not just for host monitoring, but also allows you to monitor your application as well.</p>
+<p>You can easily pipe local logs up to CloudWatch using the CloudWatch Agent to extract data and create custom app metrics. One use case of CloudWatch is that you can monitor AWS services and get real-time alerts when certain criteria are exceeded. For instance, consider a company that needs to monitor the read and write IOPS metrics for their General Purpose SSD storage type. The company wants to send real-time alerts to their team when the IOPS exceeds 2,800 IOPS so that they can determine whether the performance stress will allow them to better calibrate their I/O credit balance and/or increase the volume of their storage type.</p>
+<h4 id="cloudwatch-alarms">CloudWatch Alarms</h4>
+<p>CloudWatch alarms allows you to watch metrics and trigger events when the metrics deviate from a user-define standard of deviation. Events that CloudWatch alarms can trigger include sending an SNS notification or triggers an action that increases the size of an autoscaling group. A CloudWatch alarm has three states: <code>INSUFFICIENT_DATA</code>, <code>OK</code>, and <code>ALARM</code>.</p>
+<p>The <code>OK</code> state means that the metric is within the user-define range. The <code>ALARM</code> state is when the metric falls outside of that range (either too low or too high). The <code>INSUFFICIENT_DATA</code> state means that the data needed to make the decision is missing or incomplete. When this happens, you may need to decrease the data point threshold or you may need to increase the evaluation period so that more data can be gathered. By default, CloudWatch alarm history is stored for 14 days.</p>
+<h4 id="cloudwatch-namespaces-and-dimensions">CloudWatch Namespaces and Dimensions</h4>
+<p>Namespaces are containers for metrics, and are isolated from each other so that metrics from different applications are not mistakenly aggregated into the same statistics. All namespaces follow the convention <code>AWS/&lt;service&gt;</code>. For instance, <code>AWS/EC2</code> and <code>AWS/ELB</code>. Keep in mind that there is no default namespace. Each data you put into CloudWatch must specify a namespace.A dimension is a name/value pair that partially and uniquely identifies a metric. For example, you can see that the following has two dimensions:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">Dimensions<span style="color:#960050;background-color:#1e0010">:</span> Server=Prod, Domain=Frankfurt, Unit<span style="color:#960050;background-color:#1e0010">:</span> Count, Timestamp<span style="color:#960050;background-color:#1e0010">:</span> 2016-10-31T12<span style="color:#960050;background-color:#1e0010">:</span>30<span style="color:#960050;background-color:#1e0010">:</span>00Z, Value<span style="color:#960050;background-color:#1e0010">:</span> 105
+</code></pre></div><p>CloudWatch is a powerful tool that is optimized for the AWS ecosystem. With it, you can gain powerful insight into the AWS services and applications that you run, which will help you to debug and monitor your AWS presence.</p>
+
+                  </div>
+
+                  
+                </main>
+              </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="page-footer" id="contact_me">
+  <div class="container">
+    <div class="row">
+      <div class="col l6 s12">
+        <h5 class="white-text custom-h5">Contact</h5>
+        <p>
+            <div class="light">
+                Please send all project requests and job opportunities to <a class="footer-link" href="mailto:tranindigo@gmail.com">tranindigo@gmail.com</a>. I hope to hear from you!
+            </div>
+
+            <br />
+            <div class="left">
+              <div class="center">
+              Like my work?&nbsp;&nbsp;
+              <script type='text/javascript' src='https://ko-fi.com/widgets/widget_2.js'></script><script type ='text/javascript'>kofiwidget2.init('Buy Me a Coffee', '#daad86', 'A540JDN');kofiwidget2.draw();</script> 
+            </div>
+            </div>
+        </p>
+      </div>
+      <div class="col l4 offset-l2 s12">
+        <h5 class="white-text custom-h5">Links</h5>
+        <ul class="footer-list">
+            <li>
+              <a class="" href="mailto:tranindigo@gmail.com">
+                  <i class="small fa fa-envelope-o"></i>&emsp;E-mail
+              </a>
+            </li>
+            <li>
+              <a class="" href="https://github.com/tranindigo">
+                  <i class="small fa fa-github-square"></i>&emsp;Github
+              </a>
+            </li>
+
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="footer-copyright">
+    <div class="container">
+      All rights reserved Thomas Tran, <script>document.write(new Date().getFullYear())</script>.
+    <a class="grey-text text-lighten-4 right" href="#!"></a>
+    </div>
+  </div>
+</footer>
+
+</div>
+
+
+<script type="text/javascript" src="/js/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="/js/materialize.min.js"></script>
+<script type="text/javascript" src="/js/modernizr.js"></script>
+<script type="text/javascript" src='/js/scrollReveal.min.js'></script>
+<script type="text/javascript" src='/js/footer-reveal.min.js'></script>
+<script type="text/javascript" src='/js/grid.js'></script>
+
+<script type="text/javascript" src="/js/init.js"></script>
+<script>
+  $(function() {
+    Grid.init();
+  });
+</script>
+<script>
+  window.sr = new scrollReveal();
+</script>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-142287578-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-142287578-1');
+</script>
+
+</body>
+</html>
