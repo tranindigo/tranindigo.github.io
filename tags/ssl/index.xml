@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ssl on Thomas Tran Portfolio</title>
+    <link>https://tranindigo.github.io/tags/ssl/</link>
+    <description>Recent content in ssl on Thomas Tran Portfolio</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 20 Aug 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://tranindigo.github.io/tags/ssl/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>The HTTP/2 Optimization Revolution</title>
+      <link>https://tranindigo.github.io/posts/the-http-2-optimization-revolution/</link>
+      <pubDate>Thu, 20 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://tranindigo.github.io/posts/the-http-2-optimization-revolution/</guid>
+      <description>HTTP/2 is the second iteration of HTTP (Hypertext Transfer Protocol), which it is also backwards-compatible with. The changes introduced in HTTP/2 affects how developers optimize websites and servers for speed and efficiency. Beyond shrinking and compressing images, minimizing page and script file sizes, you can also switch to HTTP/2.
+Switching to HTTP/2 allows you to benefit from the immediate performance that you can gain from it, and because it is backwards compatible with HTTP/1.</description>
+    </item>
+    
+  </channel>
+</rss>

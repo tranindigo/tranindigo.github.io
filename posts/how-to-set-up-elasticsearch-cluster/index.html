@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
+    <meta name="theme-color" content="#2196F3">
+    <title>How to Set Up an Elasticsearch Cluster on Ubuntu 18.04</title>
+
+    <link href='https://fonts.googleapis.com/css?family=Poiret+One' rel='stylesheet' type='text/css'>
+
+    
+    <link href="/css/font-awesome.min.css" type="text/css" rel="stylesheet">
+    <link href="/css/materialize.min.css" type="text/css" rel="stylesheet">
+    <link href="/css/grid.css" type="text/css" rel="stylesheet">
+    <link href="/css/style.css?v=0.0.1" type="text/css" rel="stylesheet">
+    
+    
+    <link href="https://tranindigo.github.io/sass/post_style.css" type="text/css" rel="stylesheet">
+
+</head>
+<body id="top" class="scrollspy">
+
+
+<div id="loader-wrapper">
+    <div id="loader"></div>
+ 
+    <div class="loader-section section-left"></div>
+    <div class="loader-section section-right"></div>
+ 
+</div>
+
+<div class="wrapper">
+
+
+ <div class="navbar-fixed">
+    <nav id="nav_f" class="default_color" role="navigation">
+        <div class="container-custom">
+            <div class="nav-wrapper">
+            <a href="/index.html" id="logo-container" class="brand-logo">Thomas Tran</a>
+                <ul class="right hide-on-med-and-down">
+                    <li>
+                        <a href="/index.html#articles">
+                            <i class="fa fa-arrow-left" aria-hidden="true" id="backBtn"></i> Back to site
+                        </a>
+                    </li>
+                </ul>
+            <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="mdi-navigation-menu"></i></a>
+            </div>
+        </div>
+    </nav>
+</div>
+
+<a href="javascript:" id="return-to-top">
+  <i class="fa fa-chevron-up"></i>
+</a>
+
+<div class="section scrollspy body-section z-depth-4 post">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m10 offset-m1">
+
+              <div class="post-body card-1">
+                <main role="main">
+                  
+                  <div class="title-header">
+                    <h4 class="post-title">How to Set Up an Elasticsearch Cluster on Ubuntu 18.04</h4>
+                    <div class="sub-title-header">
+                      <i><time datetime='2021-07-13T13:57:00-05:00'>
+                        July 13, 2021
+                      </time></i>
+                      <br>
+                      <div>by Thomas Tran</div>
+                    </div>
+                  </div>
+
+                  <br><br>
+
+                  <hr class="hr-custom" style="margin-top: 5px;"/>
+
+                  <div class="article-body">
+                  <p>This article serves as a guide on how to install an Elasticsearch cluster on three Ubuntu 18.04 machines. There are ways to automatically deploy an Elasticsearch cluster using Kubernetes or Docker Cluster, but this guide will serve as a guide on how to manually set up a cluster.</p>
+<p>But first a few terminologies:</p>
+<ul>
+<li>Cluster - a collection of machines/servers that all have Elasticsearch installed, delegate responsibilities amongst themselves, and that all communicate with each other through a collective API.</li>
+<li>Nodes - a machine/server in the cluster</li>
+</ul>
+<p>First, SSH into all ES nodes in the cluster:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">ssh &lt;ubuntu username&gt;@&lt;ES node ip&gt;
+</code></pre></div><p>Elasticsearch can&rsquo;t be run as a root user. Elasticsearch itself restricts this. We need to create a new user named <code>elasticsearch</code>.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo adduser elasticsearch
+sudo adduser elasticsearch sudo
+sudo -su elasticsearch
+</code></pre></div><p>After you log in, let&rsquo;s install some prerequisites:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo apt-get install unzip
+
+sudo apt install openjdk-11-jre-headless
+
+sudo apt-get install apt-transport-https
+
+echo <span style="color:#e6db74">&#34;deb https://artifacts.elastic.co/packages/7.x/apt stable main&#34;</span> | sudo tee /etc/apt/sources.list.d/elastic-7.x.list
+</code></pre></div><p>Now let&rsquo;s install Elasticsearch. In this article, we&rsquo;ll install version 7.13.3, but you can install any other versions that you want.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+
+sudo apt-get update <span style="color:#f92672">&amp;&amp;</span> sudo apt-get install elasticsearch<span style="color:#f92672">=</span>7.13.3
+</code></pre></div><h2 id="add-custom-settings-to-elasticsearchyml">Add custom settings to <code>elasticsearch.yml</code></h2>
+<p>Now let&rsquo;s add custom settings to <code>elasticsearch.yml</code>. This YAML file is used to configure Elasticsearch.</p>
+<p>Let&rsquo;s have one of our machines be a &ldquo;master node&rdquo;, which is responsible for lightweight cluster-wide actions such as creating or deleting an index, tracking which nodes are part of the cluster, and deciding which shards to allocate to which nodes. It is important for cluster health to have a stable master node.</p>
+<p>Do this command only on the master node in the cluster:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo bash -c <span style="color:#e6db74">&#39;cat &gt; /etc/elasticsearch/elasticsearch.yml &lt;&lt; EOF
+</span><span style="color:#e6db74">cluster.name: cool-cluster
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">node.name: ${HOSTNAME} # This will default to the host name of our machine
+</span><span style="color:#e6db74">node.master: true
+</span><span style="color:#e6db74">node.data: true
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">path.logs: /var/log/elasticsearch
+</span><span style="color:#e6db74">path.data: /usr/share/elasticsearch/data
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">bootstrap.memory_lock: true
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">network.host: &lt;NODE IP ADDRESS&gt;
+</span><span style="color:#e6db74">discovery.seed_hosts: [&#34;&lt;NODE IP ADDRESS MASTER NODE&gt;&#34;, &#34;&lt;NODE IP ADDRESS DATA NODE 1&gt;&#34;, &#34;&lt;NODE IP ADDRESS DATA NODE 2&gt;&#34;]
+</span><span style="color:#e6db74">cluster.initial_master_nodes: [&#34;&lt;NODE IP ADDRESS MASTER NODE&gt;&#34;]
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">xpack.security.enabled: true
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74"># This turns on TLS/SSL for inter-node communication
+</span><span style="color:#e6db74">xpack.security.transport.ssl.enabled: true
+</span><span style="color:#e6db74">xpack.security.transport.ssl.verification_mode: certificate
+</span><span style="color:#e6db74">xpack.security.transport.ssl.client_authentication: required
+</span><span style="color:#e6db74">xpack.security.transport.ssl.keystore.path: /etc/elasticsearch/certs/elastic-certificates.p12
+</span><span style="color:#e6db74">xpack.security.transport.ssl.truststore.path: /etc/elasticsearch/certs/elastic-certificates.p12
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74"># This turns on TLS/SSL for the HTTP (Rest) interface
+</span><span style="color:#e6db74">xpack.security.http.ssl.enabled: true
+</span><span style="color:#e6db74">xpack.security.http.ssl.keystore.path: /etc/elasticsearch/certs/elasticsearch-ssl-http/elasticsearch/${HOSTNAME}/http.p12
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74"># These settings need to be entered in elasticsearch-keystore
+</span><span style="color:#e6db74"># xpack.security.transport.ssl.keystore.secure_password
+</span><span style="color:#e6db74"># xpack.security.transport.ssl.truststore.secure_password
+</span><span style="color:#e6db74"># xpack.security.http.ssl.keystore.secure_password
+</span><span style="color:#e6db74">EOF&#39;</span>
+</code></pre></div><p>Now configure <code>elasticsearch.yml</code> for each data node in the cluster. Repeat for all data nodes:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo bash -c <span style="color:#e6db74">&#39;cat &gt; /etc/elasticsearch/elasticsearch.yml &lt;&lt; EOF
+</span><span style="color:#e6db74">cluster.name: cool-cluster
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">node.name: ${HOSTNAME}
+</span><span style="color:#e6db74">node.master: false
+</span><span style="color:#e6db74">node.data: true
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">path.logs: /var/log/elasticsearch
+</span><span style="color:#e6db74">path.data: /usr/share/elasticsearch/data
+</span><span style="color:#e6db74">path.home: /usr/share/elasticsearch
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">bootstrap.memory_lock: true
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">network.host: &lt;PRIVATE IP ADDRESS&gt;
+</span><span style="color:#e6db74">discovery.seed_hosts: [&#34;&lt;PRIVATE IP ADDRESS MASTER NODE&gt;&#34;, &#34;&lt;PRIVATE IP ADDRESS DATA NODE 1&gt;&#34;, &#34;&lt;PRIVATE IP ADDRESS DATA NODE 2&gt;&#34;]
+</span><span style="color:#e6db74">cluster.initial_master_nodes: [&#34;&lt;PRIVATE IP ADDRESS MASTER NODE&gt;&#34;]
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">xpack.security.enabled: true
+</span><span style="color:#e6db74">xpack.security.transport.ssl.enabled: true
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74"># This turns on TLS/SSL for inter-node communication
+</span><span style="color:#e6db74">xpack.security.transport.ssl.verification_mode: certificate
+</span><span style="color:#e6db74">xpack.security.transport.ssl.client_authentication: required
+</span><span style="color:#e6db74">xpack.security.transport.ssl.keystore.path: /etc/elasticsearch/certs/elastic-certificates.p12
+</span><span style="color:#e6db74">xpack.security.transport.ssl.truststore.path: /etc/elasticsearch/certs/elastic-certificates.p12
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74"># This turns on SSL for the HTTP (Rest) interface
+</span><span style="color:#e6db74">xpack.security.http.ssl.enabled: true
+</span><span style="color:#e6db74">xpack.security.http.ssl.keystore.path: /etc/elasticsearch/certs/elasticsearch-ssl-http/elasticsearch/${HOSTNAME}/http.p12
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74"># These settings need to be entered in elasticsearch-keystore
+</span><span style="color:#e6db74"># xpack.security.transport.ssl.keystore.secure_password
+</span><span style="color:#e6db74"># xpack.security.transport.ssl.truststore.secure_password
+</span><span style="color:#e6db74"># xpack.security.http.ssl.keystore.secure_password
+</span><span style="color:#e6db74">EOF&#39;</span>
+</code></pre></div><h2 id="open-ports-9200-9300">Open ports 9200-9300</h2>
+<p>Now that you&rsquo;ve configured <code>elasticsearch.yml</code> for each node in the cluster, we need to open ports 9200-9300 so that clients can interact with Elasticsearch and nodes can interact with each other.</p>
+<p>Repeat this for every node in the cluster:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo ufw allow 9200:9300/tcp
+sudo ufw allow ssh
+sudo ufw enable
+</code></pre></div><h2 id="increase-file-descriptors">Increase file descriptors</h2>
+<p>Now let&rsquo;s increase file descriptors on each node. Elasticsearch recommends doing this because it uses a lot of file descriptors or file handles. Running out of file descriptors can be disastrous and will most probably lead to data loss. Make sure to increase the limit on the number of open files descriptors for the user running Elasticsearch to <code>65536</code> or higher.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo bash -c <span style="color:#e6db74">&#39;cat &gt; /etc/default/elasticsearch &lt;&lt; EOF
+</span><span style="color:#e6db74">ES_STARTUP_SLEEP_TIME=5
+</span><span style="color:#e6db74">MAX_OPEN_FILES=65536
+</span><span style="color:#e6db74">MAX_LOCKED_MEMORY=unlimited
+</span><span style="color:#e6db74">EOF&#39;</span>
+</code></pre></div><h2 id="disable-swapping">Disable Swapping</h2>
+<p>Next, let&rsquo;s disable swapping. Swapping is very bad for performance, for node stability, and should be avoided at all costs. It can cause garbage collections to last for <strong>minutes</strong> instead of milliseconds and can cause nodes to respond slowly or even to disconnect from the cluster. In a resilient distributed system, it’s more effective to let the operating system kill the node.</p>
+<p>First, add <code>LimitMEMLOCK=infinity</code> to /usr/lib/systemd/system/elasticsearch.service</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo vim /usr/lib/systemd/system/elasticsearch.service
+</code></pre></div><p>You’ll have to <em>manually add</em> <code>LimitMEMLOCK=infinity </code>under the [Service] section:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo bash -c <span style="color:#e6db74">&#39;cat &gt; /etc/security/limits.conf &lt;&lt; EOF
+</span><span style="color:#e6db74">elasticsearch soft memlock unlimited
+</span><span style="color:#e6db74">elasticsearch hard memlock unlimited
+</span><span style="color:#e6db74">EOF&#39;</span>
+</code></pre></div><h2 id="increase-vmmax_map_count">Increase <code>vm.max_map_count</code></h2>
+<p>Elasticsearch uses a <code>mmapfs</code> directory by default to store its indices. The default operating system limits on mmap counts is likely to be too low, which may result in out of memory exceptions. To set this value permanently, update the <code>vm.max_map_count</code> setting in <code>/etc/sysctl.conf</code>. To verify after rebooting, run <code>sysctl vm.max_map_count</code>.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo vim /etc/sysctl.conf
+</code></pre></div><p>Add <code>vm.max_map_count=262144</code> manually to the bottom of the file. Verify your change with:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo sysctl -p
+</code></pre></div><h3 id="change-the-permission-of-the-es-folder">Change the permission of the ES folder</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo chown -R elasticsearch:elasticsearch /usr/share/elasticsearch
+</code></pre></div><p>If you don’t do this, then the <code>elasticsearch</code> user will not be able to access this folder when running.</p>
+<h2 id="enable-tlsssl-inter-node-communications">Enable TLS/SSL Inter-node communications</h2>
+<p>Before you enable TLS/SSL, make sure that you stop Elasticsearch and Kibana on all nodes in the cluster:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo service elasticsearch stop
+
+sudo service kibana stop
+</code></pre></div><h4 id="do-for-master-node-only">Do for master node only:</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo ES_PATH_CONF<span style="color:#f92672">=</span>/etc/elasticsearch /usr/share/elasticsearch/bin/elasticsearch-certutil ca
+
+sudo ES_PATH_CONF<span style="color:#f92672">=</span>/etc/elasticsearch /usr/share/elasticsearch/bin/elasticsearch-certutil cert --ca /usr/share/elasticsearch/elastic-stack-ca.p12
+
+sudo ES_PATH_CONF<span style="color:#f92672">=</span>/etc/elasticsearch /usr/share/elasticsearch/bin/elasticsearch-certutil http
+</code></pre></div><h4 id="do-for-each-node">Do for each node:</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo mkdir /etc/elasticsearch/certs
+sudo mkdir /etc/elasticsearch/certs/elasticsearch-ssl-http
+
+sudo chown -R elasticsearch:elasticsearch /etc/elasticsearch /etc/elasticsearch/certs
+</code></pre></div><h4 id="do-on-master-node">Do on master node:</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo cp /usr/share/elasticsearch/elastic-certificates.p12 /etc/elasticsearch/certs
+
+sudo cp /usr/share/elasticsearch/elastic-stack-ca.p12 /etc/elasticsearch/certs
+
+sudo cp /usr/share/elasticsearch/elasticsearch-ssl-http.zip /etc/elasticsearch/certs
+</code></pre></div><h4 id="copy-cert-from-master-node-to-other-nodes-in-the-cluster">Copy cert from master node to other nodes in the cluster</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo scp /etc/elasticsearch/certs/elastic-certificates.p12 elasticsearch@&lt;REMOTE PRIVATE IP&gt;:/etc/elasticsearch/certs/
+
+sudo scp /etc/elasticsearch/certs/elastic-stack-ca.p12 elasticsearch@&lt;REMOTE PRIVATE IP&gt;:/etc/elasticsearch/certs/
+
+sudo scp /etc/elasticsearch/certs/elasticsearch-ssl-http.zip elasticsearch@&lt;REMOTE PRIVATE IP&gt;:/etc/elasticsearch/certs/
+</code></pre></div><h4 id="do-for-each-node-1">Do for each node:</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo chmod -R elasticsearch:elasticsearch /etc/elasticsearch/certs/*
+
+sudo unzip /etc/elasticsearch/certs/elasticsearch-ssl-http.zip -d /etc/elasticsearch/certs/elasticsearch-ssl-http
+</code></pre></div><p>For each environment, you’ll have to add</p>
+<ul>
+<li><code>xpack.security.transport.ssl.keystore.secure_password</code></li>
+<li><code>xpack.security.transport.ssl.truststore.secure_password</code></li>
+<li><code>xpack.security.http.ssl.keystore.secure_password</code></li>
+</ul>
+<p>if you decide to generate a TLS/SSL certificate with a password.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">ES_PATH_CONF<span style="color:#f92672">=</span>/etc/elasticsearch /usr/share/elasticsearch/bin/elasticsearch-keystore add xpack.security.transport.ssl.keystore.secure_password
+</code></pre></div><p>It will prompt you for the value of the setting you want to insert. Enter the password to your TLS/SSL certificates.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">ES_PATH_CONF<span style="color:#f92672">=</span>/etc/elasticsearch /usr/share/elasticsearch/bin/elasticsearch-keystore add xpack.security.transport.ssl.truststore.secure_password
+</code></pre></div><p>It will prompt you for the value of the setting you want to insert. Enter the password to your TLS/SSL Central Authority (CA).</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">ES_PATH_CONF<span style="color:#f92672">=</span>/etc/elasticsearch /usr/share/elasticsearch/bin/elasticsearch-keystore add xpack.security.http.ssl.keystore.secure_password
+</code></pre></div><p>Repeat this for each node.</p>
+<h4 id="do-this-from-a-terminal-on-your-local-computer">Do this from a terminal on your local computer:</h4>
+<p>This downloads the Certificate Authority (CA) and certificate from the remote server so that we can back it up in case things go bad.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">scp elasticsearch@&lt;REMOTE PRIVATE IP&gt;:/etc/elasticsearch/certs/elastic-stack-ca.p12 .
+
+scp elasticsearch@&lt;REMOTE PRIVATE IP&gt;:/etc/elasticsearch/certs/elastic-certificates.p12 .
+
+scp elasticsearch@&lt;REMOTE PRIVATE IP&gt;:/etc/elasticsearch/certs/elasticsearch-ssl-http.zip .
+</code></pre></div><p><strong>Tip</strong>: <em>remember the period (.) at the end!</em></p>
+<h4 id="check-certificate-expiry-date">Check certificate expiry date</h4>
+<p>Note that we’ll have to renew the certificate and Certificate Authority every 3 years.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">openssl pkcs12 -in elastic-certificates.p12 -nodes | openssl x509 -noout -enddate
+</code></pre></div><h3 id="generate-user-credentials">Generate user credentials</h3>
+<p>This is a <em><strong>one-time operation</strong></em> that will generate all credentials needed to access Elasticsearch API, Kibana, etc… <strong>Be careful</strong> when you’re running this command. ES will not let you run it a second time! If you mess it up, you’ll have to reinstall ES, and delete the etc/elasticsearch, /usr/share/elasticsearch folders!</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo ES_PATH_CONF<span style="color:#f92672">=</span>/etc/elasticsearch /usr/share/elasticsearch/bin/elasticsearch-setup-passwords auto
+</code></pre></div><h3 id="start-elasticsearch">Start Elasticsearch</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo systemctl daemon-reload
+sudo systemctl enable elasticsearch
+sudo systemctl start elasticsearch
+</code></pre></div><h2 id="test-things-out">Test things out</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">curl -XGET &lt;http://&lt;master node ip&gt;/
+curl -XGET &lt;http://&lt;master node ip&gt;:9200/_cluster/health?pretty
+</code></pre></div><h3 id="check-logs">Check logs</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo tail /var/log/elasticsearch/&lt;cluster name&gt;.log
+</code></pre></div>
+                  </div>
+
+                  
+                </main>
+              </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="page-footer" id="contact_me">
+  <div class="container">
+    <div class="row">
+      <div class="col l6 s12">
+        <h5 class="white-text custom-h5">Contact</h5>
+        <p>
+            <div class="light">
+                Please send all project requests and job opportunities to <a class="footer-link" href="mailto:tranindigo@gmail.com">tranindigo@gmail.com</a>. I hope to hear from you!
+            </div>
+
+            <br />
+            <div class="left">
+              <div class="center">
+              Like my work?&nbsp;&nbsp;
+              <script type='text/javascript' src='https://ko-fi.com/widgets/widget_2.js'></script><script type ='text/javascript'>kofiwidget2.init('Buy Me a Coffee', '#daad86', 'A540JDN');kofiwidget2.draw();</script> 
+            </div>
+            </div>
+        </p>
+      </div>
+      <div class="col l4 offset-l2 s12">
+        <h5 class="white-text custom-h5">Links</h5>
+        <ul class="footer-list">
+            <li>
+              <a class="" href="mailto:tranindigo@gmail.com">
+                  <i class="small fa fa-envelope-o"></i>&emsp;E-mail
+              </a>
+            </li>
+            <li>
+              <a class="" href="https://github.com/tranindigo">
+                  <i class="small fa fa-github-square"></i>&emsp;Github
+              </a>
+            </li>
+
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="footer-copyright">
+    <div class="container">
+      All rights reserved Thomas Tran, <script>document.write(new Date().getFullYear())</script>.
+    <a class="grey-text text-lighten-4 right" href="#!"></a>
+    </div>
+  </div>
+</footer>
+
+</div>
+
+
+<script type="text/javascript" src="/js/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="/js/materialize.min.js"></script>
+<script type="text/javascript" src="/js/modernizr.js"></script>
+<script type="text/javascript" src='/js/scrollReveal.min.js'></script>
+<script type="text/javascript" src='/js/footer-reveal.min.js'></script>
+<script type="text/javascript" src='/js/grid.js'></script>
+
+<script type="text/javascript" src="/js/init.js"></script>
+<script>
+  $(function() {
+    Grid.init();
+  });
+</script>
+<script>
+  window.sr = new scrollReveal();
+</script>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-142287578-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-142287578-1');
+</script>
+
+</body>
+</html>

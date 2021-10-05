@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
+    <meta name="theme-color" content="#2196F3">
+    <title>Kubernetes Part 2: Architecture</title>
+
+    <link href='https://fonts.googleapis.com/css?family=Poiret+One' rel='stylesheet' type='text/css'>
+
+    
+    <link href="/css/font-awesome.min.css" type="text/css" rel="stylesheet">
+    <link href="/css/materialize.min.css" type="text/css" rel="stylesheet">
+    <link href="/css/grid.css" type="text/css" rel="stylesheet">
+    <link href="/css/style.css?v=0.0.1" type="text/css" rel="stylesheet">
+    
+    
+    <link href="https://tranindigo.github.io/sass/post_style.css" type="text/css" rel="stylesheet">
+
+</head>
+<body id="top" class="scrollspy">
+
+
+<div id="loader-wrapper">
+    <div id="loader"></div>
+ 
+    <div class="loader-section section-left"></div>
+    <div class="loader-section section-right"></div>
+ 
+</div>
+
+<div class="wrapper">
+
+
+ <div class="navbar-fixed">
+    <nav id="nav_f" class="default_color" role="navigation">
+        <div class="container-custom">
+            <div class="nav-wrapper">
+            <a href="/index.html" id="logo-container" class="brand-logo">Thomas Tran</a>
+                <ul class="right hide-on-med-and-down">
+                    <li>
+                        <a href="/index.html#articles">
+                            <i class="fa fa-arrow-left" aria-hidden="true" id="backBtn"></i> Back to site
+                        </a>
+                    </li>
+                </ul>
+            <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="mdi-navigation-menu"></i></a>
+            </div>
+        </div>
+    </nav>
+</div>
+
+<a href="javascript:" id="return-to-top">
+  <i class="fa fa-chevron-up"></i>
+</a>
+
+<div class="section scrollspy body-section z-depth-4 post">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m10 offset-m1">
+
+              <div class="post-body card-1">
+                <main role="main">
+                  
+                  <div class="title-header">
+                    <h4 class="post-title">Kubernetes Part 2: Architecture</h4>
+                    <div class="sub-title-header">
+                      <i><time datetime='2021-04-02T10:39:00-05:00'>
+                        April 02, 2021
+                      </time></i>
+                      <br>
+                      <div>by Thomas Tran</div>
+                    </div>
+                  </div>
+
+                  <br><br>
+
+                  <hr class="hr-custom" style="margin-top: 5px;"/>
+
+                  <div class="article-body">
+                  <p>In this series of articles, we&rsquo;ll take a deep dive into the world of container orchestration and start playing with Kubernetes hands-on. In this article, we&rsquo;ll take a look at the Kubernetes architecture and learn more about how it&rsquo;s laid out.</p>
+<h2 id="nodes--pods">Nodes &amp; Pods</h2>
+<p>A node can be a physical machine, a virtual machine, or a virtual machine in the cloud. Inside a node, we have pods, and inside a pods we have containers, and there can be multiple containers in the pod. The worker node hosts the pods that are the components of the application. The master node manages the worker nodes and the pods inside the cluster.</p>
+<ul>
+<li>Useful information: As of the latest version of Kubernetes, a cluster can have up to 5,000 nodes. More specifically, Kubernetes supports no more than 5,000 nodes, no morethan 150,000 total pods, and no more than 300,000 total containers.</li>
+</ul>
+<h2 id="master--worker-nodes">Master &amp; Worker Nodes</h2>
+<p>In Kubernetes, we have masters and worker nodes. Together they form a cluster. The master node manages the work nodes within the cluster. When you deploy Kubernetes, you get cluster, which is made up of nodes. A cluster has at least one master node and one worker node.</p>
+<p>Master node is responsible for managing the cluster and monitors nodes and pods in a cluster. When a node fails, it moves the workload of the failed node to another worker node. There are four components of the master node:</p>
+<figure class="article-img">
+    <img src="/img/kubernetes-master.png"/> 
+</figure>
+
+<h4 id="api-server">API Server</h4>
+<p>The API Server is responsible for all communications (JSON over HTTP API). It exposes some APIs for almost every operation, and a user can interact with these APIs from a UI or from the <code>kubectl</code> command line tool, which is written in the Go programming language.</p>
+<h4 id="scheduler">Scheduler</h4>
+<p>Schedules pods on nodes. The Scheduler is a component on the master that watches newly-created pods that have no node assigned, and selects a node for them to run on. It can read the hardware configuration from the configuration file in <code>etcd</code> and schedules the pods on nodes accordingly. The Scheduler obtains all of this config information from <code>etcd</code> datastore through the API Server and combines that with resource usage data for each worker in the cluster.</p>
+<h4 id="controller-manager">Controller Manager</h4>
+<p>This component runs and monitors controllers. There are two types of Control Managers: <code>kube-controller-manager</code> and <code>cloud-controller-manager</code>. The <code>kube-controller-manager</code> runs controllers that act when nodes become unavailable to ensure pod counts are as expected. It also creates endpoints, service accounts, and API access tokens. Logically, each controller is a separate process, but to reduce complexity, they are all compiled into a single binary and run in a single process.</p>
+<p>Let&rsquo;s go a litte deeper and see all of the <code>kube-controller-manager</code>&rsquo;s child components. The Node Controller is responsible for noticing and responding when nodes go down. The Replication Controller is responsible for maintaining the correct number of pods for every Replication Controller object in the system. The Endpoints Controller populates the Endpoints object, and oins services and pods. The Service Account and Token Controllers create accounts and API access tokens for new namespaces.</p>
+<p>All of these controllers watch continuously to compare the cluster&rsquo;s desired state (from the hardware configuration) to its current state (obtained from <code>etcd</code> datastore via the API Server). If there is a mismatch, then it will take corrective action in the cluster until its current state matches the desired state.</p>
+<p>The <code>cloud-controller-manager</code> runs controllers responsible to interact with the underlying infrastructure of a cloud provider when nodes become unavailable, to manage storage volumes when provided by a cloud service, and to manage load balancing and routing. It runs the following controllers Node Controller, Router Controller, Service Controller, and the Volume Controller. The Node Controller checks the cloud provider to determine if a node has been deleted in the cloud after it stops responding. The Route Controller sets up routes in the underlying cloud infrastructure. The Service Controller creates, updates, and deletes cloud provider load balancers. Finally, the Volume Controller creates, attaches, and mounts volumes and interacts with the cloud provider to orchestrate volumes.</p>
+<h4 id="etcd">Etcd</h4>
+<p>This component is an open-sourced, distributed key-value database that acts as a datastore.</p>
+<p>The worker node can be any physical or virtual machine where containers are depoyed. Every node in a Kubernetes cluster must run a container runtime like Docker. There are three components in each node: <code>kubelet</code>, <code>kube-proxy</code>, and the container runtime. Node components run on every node, maintaining running pods, and providing the Kubernetes runtime environment.</p>
+<h4 id="kubelet">kubelet</h4>
+<p>Is an agent running on each node that communicates with components from the master node. It makes sure that containers are running in a pod. The kubelet takes a set of PodSpecs taht are provided through various mechanisms and ensures that the containers described in those PodSpecs are running and health. If there are any issues, kubelet tries to restart the pods. <code>kubelet</code> does <em>not</em> manage containers not created via Kubernetes.</p>
+<h4 id="kube-proxy">kube-proxy</h4>
+<p>Is a network agent that is responsible for maintaining network configuration and rules, which exposes services to the outside world.</p>
+<h4 id="container-runtime">Container runtime</h4>
+<p>Is the software that is responsible for running containers. The most common one is Docker, but there are others such as Containerd, Cri-O, etc&hellip; Kubernetes does not have the capability to directly handle containers. So in order to run and manage a container&rsquo;s lifecycle, Kubernetes requires a container runtime on the node where a pod and its containers are to be scheduled.</p>
+
+                  </div>
+
+                  
+                </main>
+              </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="page-footer" id="contact_me">
+  <div class="container">
+    <div class="row">
+      <div class="col l6 s12">
+        <h5 class="white-text custom-h5">Contact</h5>
+        <p>
+            <div class="light">
+                Please send all project requests and job opportunities to <a class="footer-link" href="mailto:tranindigo@gmail.com">tranindigo@gmail.com</a>. I hope to hear from you!
+            </div>
+
+            <br />
+            <div class="left">
+              <div class="center">
+              Like my work?&nbsp;&nbsp;
+              <script type='text/javascript' src='https://ko-fi.com/widgets/widget_2.js'></script><script type ='text/javascript'>kofiwidget2.init('Buy Me a Coffee', '#daad86', 'A540JDN');kofiwidget2.draw();</script> 
+            </div>
+            </div>
+        </p>
+      </div>
+      <div class="col l4 offset-l2 s12">
+        <h5 class="white-text custom-h5">Links</h5>
+        <ul class="footer-list">
+            <li>
+              <a class="" href="mailto:tranindigo@gmail.com">
+                  <i class="small fa fa-envelope-o"></i>&emsp;E-mail
+              </a>
+            </li>
+            <li>
+              <a class="" href="https://github.com/tranindigo">
+                  <i class="small fa fa-github-square"></i>&emsp;Github
+              </a>
+            </li>
+
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="footer-copyright">
+    <div class="container">
+      All rights reserved Thomas Tran, <script>document.write(new Date().getFullYear())</script>.
+    <a class="grey-text text-lighten-4 right" href="#!"></a>
+    </div>
+  </div>
+</footer>
+
+</div>
+
+
+<script type="text/javascript" src="/js/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="/js/materialize.min.js"></script>
+<script type="text/javascript" src="/js/modernizr.js"></script>
+<script type="text/javascript" src='/js/scrollReveal.min.js'></script>
+<script type="text/javascript" src='/js/footer-reveal.min.js'></script>
+<script type="text/javascript" src='/js/grid.js'></script>
+
+<script type="text/javascript" src="/js/init.js"></script>
+<script>
+  $(function() {
+    Grid.init();
+  });
+</script>
+<script>
+  window.sr = new scrollReveal();
+</script>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-142287578-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-142287578-1');
+</script>
+
+</body>
+</html>
