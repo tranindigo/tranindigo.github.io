@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
+    <meta name="theme-color" content="#2196F3">
+    <title>SQL Server: Clustered and Non-Clustered Indexes</title>
+
+    <link href='https://fonts.googleapis.com/css?family=Poiret+One' rel='stylesheet' type='text/css'>
+
+    
+    <link href="/css/font-awesome.min.css" type="text/css" rel="stylesheet">
+    <link href="/css/materialize.min.css" type="text/css" rel="stylesheet">
+    <link href="/css/grid.css" type="text/css" rel="stylesheet">
+    <link href="/css/style.css?v=0.0.1" type="text/css" rel="stylesheet">
+    
+    
+    <link href="https://tranindigo.github.io/sass/post_style.css" type="text/css" rel="stylesheet">
+
+</head>
+<body id="top" class="scrollspy">
+
+
+<div id="loader-wrapper">
+    <div id="loader"></div>
+ 
+    <div class="loader-section section-left"></div>
+    <div class="loader-section section-right"></div>
+ 
+</div>
+
+<div class="wrapper">
+
+
+ <div class="navbar-fixed">
+    <nav id="nav_f" class="default_color" role="navigation">
+        <div class="container-custom">
+            <div class="nav-wrapper">
+            <a href="/index.html" id="logo-container" class="brand-logo">Thomas Tran</a>
+                <ul class="right hide-on-med-and-down">
+                    <li>
+                        <a href="/index.html#articles">
+                            <i class="fa fa-arrow-left" aria-hidden="true" id="backBtn"></i> Back to site
+                        </a>
+                    </li>
+                </ul>
+            <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="mdi-navigation-menu"></i></a>
+            </div>
+        </div>
+    </nav>
+</div>
+
+<a href="javascript:" id="return-to-top">
+  <i class="fa fa-chevron-up"></i>
+</a>
+
+<div class="section scrollspy body-section z-depth-4 post">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m10 offset-m1">
+
+              <div class="post-body card-1">
+                <main role="main">
+                  
+                  <div class="title-header">
+                    <h4 class="post-title">SQL Server: Clustered and Non-Clustered Indexes</h4>
+                    <div class="sub-title-header">
+                      <i><time datetime='2021-04-01T00:00:00Z'>
+                        April 01, 2021
+                      </time></i>
+                      <br>
+                      <div>by Thomas Tran</div>
+                    </div>
+                  </div>
+
+                  <br><br>
+
+                  <hr class="hr-custom" style="margin-top: 5px;"/>
+
+                  <div class="article-body">
+                  <p>When a table is created and does not have an index, this is called a heap. When new values are added to this table, values are added in no particular order. Using this structure, if we were to search for a particular value, we&rsquo;ll have to search through every single row in the table not only because there is no order to the data, but even if we found a match, we wouldn&rsquo;t know if there were no more searches later on. This is called a table scan and is very inefficient because we have to touch every record in the table.</p>
+<p>Using an index will help you to find information faster by providing values. A clustered index sorts the values in the table and there can only be one clustered index per table. In SQL Server, the primary key constraint automtically creates a clustered index on that particular column. The clustered index stores the records in the student table in the ascending order of the primary key. This allows it to prevent scanning the entire table and improve efficiency when looking up the record.</p>
+<p>You can use the following script to create a new clustered index. Be sure to delete the previous/default clustered index when you first created the table first, though!</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql">use PhoneDB
+
+<span style="color:#66d9ef">CREATE</span> CLUSTERED <span style="color:#66d9ef">INDEX</span> IX_TableName_ColName1_ColName2
+<span style="color:#66d9ef">ON</span> TableName(ColName1 <span style="color:#66d9ef">ASC</span>, ColName2 <span style="color:#66d9ef">DESC</span>)
+</code></pre></div><p>This creates a clustered index named <code>IX_TableName_ColName1_ColName2</code> on the <code>TableName</code> table. The index is on the <code>ColName1</code> and <code>ColName2</code> columns, which is called a &ldquo;composite index&rdquo;. This will sortall records in the ascending order of <code>ColName1</code>. If <code>ColName1</code> s the same for two or more records, those records are sorted in the descending order in the <code>ColName2</code> column.</p>
+<p>A nonclustered index is a data structure that improves the speed of data retrieval from database tables. A nonclustered index stores and sorts data separately from the data rows in the table. It is essentially a copy of selected columns of data from a table with the links to the associated table.</p>
+<p>A nonclustered index can help you find data quicker than searching the underlying table because it uses a B-tree data structure in its underlying implementation, which is much more efficient in terms of complexity. Queries that ping a nonclustered index can be answered entirely by the data in the nonclustered index, or the nonclustered index can point to the rows in the underlying table.</p>
+<p>To create a nonclustered index you can use the following syntax:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql">use PhoneDB
+
+<span style="color:#66d9ef">CREATE</span> NONCLUSTERED <span style="color:#66d9ef">INDEX</span> IX_TableName_ColName
+<span style="color:#66d9ef">ON</span> TableName(ColName <span style="color:#66d9ef">ASC</span>)
+</code></pre></div><p>The above script creates a nonclustered index on the <code>ColName</code> column of the <code>TableName</code> table. The table data and the index will be stored in different places. The table records will be sorted by a clustered index if there is one. The index will be sorted according to its definition.</p>
+
+                  </div>
+
+                  
+                </main>
+              </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="page-footer" id="contact_me">
+  <div class="container">
+    <div class="row">
+      <div class="col l6 s12">
+        <h5 class="white-text custom-h5">Contact</h5>
+        <p>
+            <div class="light">
+                Please send all project requests and job opportunities to <a class="footer-link" href="mailto:tranindigo@gmail.com">tranindigo@gmail.com</a>. I hope to hear from you!
+            </div>
+
+            <br />
+            <div class="left">
+              <div class="center">
+              Like my work?&nbsp;&nbsp;
+              <script type='text/javascript' src='https://ko-fi.com/widgets/widget_2.js'></script><script type ='text/javascript'>kofiwidget2.init('Buy Me a Coffee', '#daad86', 'A540JDN');kofiwidget2.draw();</script> 
+            </div>
+            </div>
+        </p>
+      </div>
+      <div class="col l4 offset-l2 s12">
+        <h5 class="white-text custom-h5">Links</h5>
+        <ul class="footer-list">
+            <li>
+              <a class="" href="mailto:tranindigo@gmail.com">
+                  <i class="small fa fa-envelope-o"></i>&emsp;E-mail
+              </a>
+            </li>
+            <li>
+              <a class="" href="https://github.com/tranindigo">
+                  <i class="small fa fa-github-square"></i>&emsp;Github
+              </a>
+            </li>
+
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="footer-copyright">
+    <div class="container">
+      All rights reserved Thomas Tran, <script>document.write(new Date().getFullYear())</script>.
+    <a class="grey-text text-lighten-4 right" href="#!"></a>
+    </div>
+  </div>
+</footer>
+
+</div>
+
+
+<script type="text/javascript" src="/js/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="/js/materialize.min.js"></script>
+<script type="text/javascript" src="/js/modernizr.js"></script>
+<script type="text/javascript" src='/js/scrollReveal.min.js'></script>
+<script type="text/javascript" src='/js/footer-reveal.min.js'></script>
+<script type="text/javascript" src='/js/grid.js'></script>
+
+<script type="text/javascript" src="/js/init.js"></script>
+<script>
+  $(function() {
+    Grid.init();
+  });
+</script>
+<script>
+  window.sr = new scrollReveal();
+</script>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-142287578-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-142287578-1');
+</script>
+
+</body>
+</html>
