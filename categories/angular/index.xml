@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>angular on Thomas Tran Portfolio</title>
+    <link>https://tranindigo.github.io/categories/angular/</link>
+    <description>Recent content in angular on Thomas Tran Portfolio</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 17 Feb 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://tranindigo.github.io/categories/angular/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Angular HTTP Interceptors: Modifying Request Headers</title>
+      <link>https://tranindigo.github.io/posts/angular-http-interceptors-modifying-request-headers/</link>
+      <pubDate>Wed, 17 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://tranindigo.github.io/posts/angular-http-interceptors-modifying-request-headers/</guid>
+      <description>In newer versions of Angular, HTTPInterceptor is an interface which intercepts and handles an HttpRequest or HTTPResponse, which allows you to transform the outgoing request or incoming response. This may be useful when you want to inject a header into your HTTPRequest that contains your authorization token or any other important changes to the request that is relevant to your business logic.
+Some use cases for HTTP Interceptor may be:</description>
+    </item>
+    
+  </channel>
+</rss>
