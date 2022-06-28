@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
+    <meta name="theme-color" content="#2196F3">
+    <title>How to Set Up Kibana on Ubuntu 18.04</title>
+
+    <link href='https://fonts.googleapis.com/css?family=Poiret+One' rel='stylesheet' type='text/css'>
+
+    
+    <link href="/css/font-awesome.min.css" type="text/css" rel="stylesheet">
+    <link href="/css/materialize.min.css" type="text/css" rel="stylesheet">
+    <link href="/css/grid.css" type="text/css" rel="stylesheet">
+    <link href="/css/style.css?v=0.0.1" type="text/css" rel="stylesheet">
+    
+    
+    <link href="https://tranindigo.github.io/sass/post_style.css" type="text/css" rel="stylesheet">
+
+</head>
+<body id="top" class="scrollspy">
+
+
+<div id="loader-wrapper">
+    <div id="loader"></div>
+ 
+    <div class="loader-section section-left"></div>
+    <div class="loader-section section-right"></div>
+ 
+</div>
+
+<div class="wrapper">
+
+
+ <div class="navbar-fixed">
+    <nav id="nav_f" class="default_color" role="navigation">
+        <div class="container-custom">
+            <div class="nav-wrapper">
+            <a href="/index.html" id="logo-container" class="brand-logo">Thomas Tran</a>
+                <ul class="right hide-on-med-and-down">
+                    <li>
+                        <a href="/index.html#articles">
+                            <i class="fa fa-arrow-left" aria-hidden="true" id="backBtn"></i> Back to site
+                        </a>
+                    </li>
+                </ul>
+            <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="mdi-navigation-menu"></i></a>
+            </div>
+        </div>
+    </nav>
+</div>
+
+<a href="javascript:" id="return-to-top">
+  <i class="fa fa-chevron-up"></i>
+</a>
+
+<div class="section scrollspy body-section z-depth-4 post">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m10 offset-m1">
+
+              <div class="post-body card-1">
+                <main role="main">
+                  
+                  <div class="title-header">
+                    <h4 class="post-title">How to Set Up Kibana on Ubuntu 18.04</h4>
+                    <div class="sub-title-header">
+                      <i><time datetime='2021-07-14T09:07:00-05:00'>
+                        July 14, 2021
+                      </time></i>
+                      <br>
+                      <div>by Thomas Tran</div>
+                    </div>
+                  </div>
+
+                  <br><br>
+
+                  <hr class="hr-custom" style="margin-top: 5px;"/>
+
+                  <div class="article-body">
+                  <p>This article contains instructions to set up Kibana inside an Ubuntu 18.04 machine. It covers the installation process, networking, and memory allocation.</p>
+<h3 id="install-kibana">Install Kibana</h3>
+<p>The version of Kibana <em>has</em> to match the version of Elasticsearch you installed.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo apt-get update <span style="color:#f92672">&amp;&amp;</span> sudo apt-get install kibana<span style="color:#f92672">=</span>7.13.3
+</code></pre></div><h3 id="enable-network-access-to-port-5601">Enable network access to port 5601</h3>
+<p>Kibana is served on port 5601 by default, so we’ll have to open that up.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo ufw allow <span style="color:#ae81ff">5601</span>
+
+sudo ufw enable
+
+sudo ufw status
+</code></pre></div><h3 id="lower-allocated-memory-for-kibana">Lower allocated memory for Kibana</h3>
+<p>We don’t need that much memory for Kibana at the moment because we’re only using it for monitoring the Elasticsearch cluster. This could change in the future and you may have to adjust the memory allocation for it. Right now we&rsquo;re setting the RAM to 800 megabytes.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo bash -c <span style="color:#e6db74">&#39;cat &gt; /etc/kibana/node.options &lt;&lt; EOF
+</span><span style="color:#e6db74">--max-old-space-size=800
+</span><span style="color:#e6db74">EOF&#39;</span>
+</code></pre></div><h3 id="add-configurations-to-kibanayml">Add configurations to <code>kibana.yml</code></h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo bash -c <span style="color:#e6db74">&#39;cat &gt; /etc/kibana/kibana.yml &lt;&lt; EOF
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">server.host: &#34;0.0.0.0&#34; # binds to all IP addresses
+</span><span style="color:#e6db74">server.name: &#34;&lt;a name for your kibana&gt;&#34;
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">elasticsearch.hosts: [ &#34;https://&lt;Elasticsearch IP&gt;:9200&#34; ]
+</span><span style="color:#e6db74">elasticsearch.preserveHost: false
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74"># Logging settings
+</span><span style="color:#e6db74">logging.dest: /var/log/kibana
+</span><span style="color:#e6db74">logging.rotate.enabled: true
+</span><span style="color:#e6db74">logging.rotate.keepFiles: 7
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">elasticsearch.username: &#34;kibana&#34;
+</span><span style="color:#e6db74">elasticsearch.password: &#34;&#34; # auto-generated by elasticsearch-setup-password
+</span><span style="color:#e6db74">EOF&#39;</span>
+</code></pre></div><p>Assign <code>server.host=0.0.0.0</code> so that Kibana can bind to all IP addresses on the local machine, including the private IP that is used to access Kibana.</p>
+<h3 id="optional-tlsssl">Optional: TLS/SSL</h3>
+<p>If you want to enable TLS/SSL between Kibana and Elasticsearch, copy Kibana certificates to the correct place. At the moment we’re <strong><em>not</em></strong> doing this, so the following is optional:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo mkdir /etc/kibana/certs
+
+sudo cp /etc/elasticsearch/certs/elasticsearch-ssl-http/kibana/elasticsearch-ca.pem /etc/kibana/certs
+</code></pre></div><p>Then allow the <code>kibana</code> user access to the certificate. If you don’t do this, you will get a “Permission denied” error when starting the daemon.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo chown -R kibana:kibana /etc/kibana/certs/elasticsearch-ca.pem
+</code></pre></div><h3 id="create-logging-directory">Create logging directory</h3>
+<p>By default Kibana cannot create its own logging directory at <code>var/log/kibana</code> so we’ll have to manually add it:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo touch /var/log/kibana
+
+sudo chown -R kibana:kibana /var/log/kibana
+</code></pre></div><h3 id="start-kibana">Start Kibana</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo systemctl daemon-reload
+
+sudo systemctl enable kibana
+
+sudo systemctl start kibana
+</code></pre></div><h3 id="test-curl">Test curl</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">curl -XGET http://&lt;PRIVATE IP&gt;:5601/app/kibana
+</code></pre></div><h3 id="view-latest-kibana-logs">View latest Kibana logs</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">tail -f /var/log/kibana/kibana.log
+</code></pre></div><p>The <code>-f</code> flag will attach the the bottom of the log and follow it as it changes.</p>
+
+                  </div>
+
+                  
+                </main>
+              </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="page-footer" id="contact_me">
+  <div class="container">
+    <div class="row">
+      <div class="col l6 s12">
+        <h5 class="white-text custom-h5">Contact</h5>
+        <p>
+            <div class="light">
+                Please send all project requests and job opportunities to <a class="footer-link" href="mailto:tranindigo@gmail.com">tranindigo@gmail.com</a>. I hope to hear from you!
+            </div>
+
+            <br />
+            <div class="left">
+              <div class="center">
+              Like my work?&nbsp;&nbsp;
+              <script type='text/javascript' src='https://ko-fi.com/widgets/widget_2.js'></script><script type ='text/javascript'>kofiwidget2.init('Buy Me a Coffee', '#daad86', 'A540JDN');kofiwidget2.draw();</script> 
+            </div>
+            </div>
+        </p>
+      </div>
+      <div class="col l4 offset-l2 s12">
+        <h5 class="white-text custom-h5">Links</h5>
+        <ul class="footer-list">
+            <li>
+              <a class="" href="mailto:tranindigo@gmail.com">
+                  <i class="small fa fa-envelope-o"></i>&emsp;E-mail
+              </a>
+            </li>
+            <li>
+              <a class="" href="https://github.com/tranindigo">
+                  <i class="small fa fa-github-square"></i>&emsp;Github
+              </a>
+            </li>
+
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="footer-copyright">
+    <div class="container">
+      All rights reserved Thomas Tran, <script>document.write(new Date().getFullYear())</script>.
+    <a class="grey-text text-lighten-4 right" href="#!"></a>
+    </div>
+  </div>
+</footer>
+
+</div>
+
+
+<script type="text/javascript" src="/js/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="/js/materialize.min.js"></script>
+<script type="text/javascript" src="/js/modernizr.js"></script>
+<script type="text/javascript" src='/js/scrollReveal.min.js'></script>
+<script type="text/javascript" src='/js/footer-reveal.min.js'></script>
+<script type="text/javascript" src='/js/grid.js'></script>
+
+<script type="text/javascript" src="/js/init.js"></script>
+<script>
+  $(function() {
+    Grid.init();
+  });
+</script>
+<script>
+  window.sr = new scrollReveal();
+</script>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-142287578-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-142287578-1');
+</script>
+
+</body>
+</html>
