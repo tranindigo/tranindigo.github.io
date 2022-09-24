@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>module on Thomas Tran Portfolio</title>
+    <link>https://tranindigo.github.io/tags/module/</link>
+    <description>Recent content in module on Thomas Tran Portfolio</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 23 May 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://tranindigo.github.io/tags/module/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to modularize Terraform code</title>
+      <link>https://tranindigo.github.io/posts/terraform-basics/</link>
+      <pubDate>Mon, 23 May 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://tranindigo.github.io/posts/terraform-basics/</guid>
+      <description>Terraform modules allow us to group resources together, define input variables to allow different configurations, and define export variables to define how other resources or modules can use. You can think of modules as self-contained packages which can be used in different places. Modules can even be shared across teams in an organization or as open-source exports!
+Let&amp;rsquo;s say you have the following Datadog resource that is not modularized:
+main.tf</description>
+    </item>
+    
+  </channel>
+</rss>
