@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>github pages on Thomas Tran Portfolio</title>
+    <link>https://tranindigo.github.io/tags/github-pages/</link>
+    <description>Recent content in github pages on Thomas Tran Portfolio</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 25 Mar 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://tranindigo.github.io/tags/github-pages/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to Add a Custom Domain to your Github Pages Website</title>
+      <link>https://tranindigo.github.io/posts/github-pages-custom-domain/</link>
+      <pubDate>Thu, 25 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://tranindigo.github.io/posts/github-pages-custom-domain/</guid>
+      <description>If you are anything like me, then you&amp;rsquo;ve had to link a custom domain to your Github Pages site. But, if you are me reading this in the future, then you&amp;rsquo;ll know that I do this so rarely that I forget how to do it every time, which always ends up with me spending valuable time researching this for the nth time. Combined with the long-term nature of DNS propagation and the fact that I won&amp;rsquo;t get to see if what I did worked for up to 24 hours, I often get stressed when it doesn&amp;rsquo;t work out the way it should!</description>
+    </item>
+    
+  </channel>
+</rss>
