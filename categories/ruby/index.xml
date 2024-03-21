@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Ruby on Thomas Tran Portfolio</title>
+    <link>https://tranindigo.github.io/categories/ruby/</link>
+    <description>Recent content in Ruby on Thomas Tran Portfolio</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 25 Aug 2020 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://tranindigo.github.io/categories/ruby/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Rails Caching Strategies</title>
+      <link>https://tranindigo.github.io/posts/rails-caching-strategies/</link>
+      <pubDate>Tue, 25 Aug 2020 00:00:00 +0000</pubDate>
+      <guid>https://tranindigo.github.io/posts/rails-caching-strategies/</guid>
+      <description>Rails comes packaged with three types of caching techniques: page caching, action caching, and fragment caching. We&amp;rsquo;ll shortly talk about each strategy to better understand them.&#xA;Page caching Page caching allows the generated page to be fulfilled by the webserver without ever having to go through the Rails stack at all. This is very fast, but you can&amp;rsquo;t use it in every situation, such as pages that need authentication, and you&amp;rsquo;ll also have to deal with cache expiration as well.</description>
+    </item>
+    <item>
+      <title>Ruby&#39;s Regexp Class</title>
+      <link>https://tranindigo.github.io/posts/rubys-regexp-class/</link>
+      <pubDate>Sun, 19 Jul 2020 00:00:00 +0000</pubDate>
+      <guid>https://tranindigo.github.io/posts/rubys-regexp-class/</guid>
+      <description>A regular expression (regex) is a sequence of characters that define how to search and match patterns in a string. It is commonly used in all modern programming languages like Java, Ruby, and Python.&#xA;Ruby uses the class Regexp to store a regex. Regexp are delimited using the following literals and constructor:&#xA;/.../ %r{...} Regexp::new You can call the match() method to check whether a string contains the pattern. For instance:</description>
+    </item>
+  </channel>
+</rss>
