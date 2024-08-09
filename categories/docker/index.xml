@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Docker on Thomas Tran Portfolio</title>
+    <link>https://tranindigo.github.io/categories/docker/</link>
+    <description>Recent content in Docker on Thomas Tran Portfolio</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 21 Mar 2024 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://tranindigo.github.io/categories/docker/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to create multi-stage Docker builds</title>
+      <link>https://tranindigo.github.io/posts/multistage-docker/</link>
+      <pubDate>Thu, 21 Mar 2024 00:00:00 +0000</pubDate>
+      <guid>https://tranindigo.github.io/posts/multistage-docker/</guid>
+      <description>Multi-stage builds are a feature in Docker that allows you to build Docker images in multiple stages, each with its own base image and set of instructions. This can help you create smaller, more efficient Docker images by separating the build-time dependencies from the runtime dependencies.&#xA;How Multi-Stage Builds Work In a multi-stage Docker build, you specify multiple FROM instructions in your Dockerfile. Each FROM instruction can use a different base image and starts a new stage of the build.</description>
+    </item>
+  </channel>
+</rss>

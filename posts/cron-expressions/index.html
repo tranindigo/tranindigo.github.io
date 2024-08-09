@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
+    <meta name="theme-color" content="#2196F3">
+    <title>Anatomy of a Cron Expression</title>
+
+    <link href='https://fonts.googleapis.com/css?family=Poiret+One' rel='stylesheet' type='text/css'>
+
+    
+    <link href="/css/font-awesome.min.css" type="text/css" rel="stylesheet">
+    <link href="/css/materialize.min.css" type="text/css" rel="stylesheet">
+    <link href="/css/grid.css" type="text/css" rel="stylesheet">
+    <link href="/css/style.css?v=0.0.1" type="text/css" rel="stylesheet">
+    
+    
+    <link href="https://tranindigo.github.io/sass/post_style.css" type="text/css" rel="stylesheet">
+
+</head>
+<body id="top" class="scrollspy">
+
+
+<div id="loader-wrapper">
+    <div id="loader"></div>
+ 
+    <div class="loader-section section-left"></div>
+    <div class="loader-section section-right"></div>
+ 
+</div>
+
+<div class="wrapper">
+
+
+ <div class="navbar-fixed">
+    <nav id="nav_f" class="default_color" role="navigation">
+        <div class="container-custom">
+            <div class="nav-wrapper">
+            <a href="/index.html" id="logo-container" class="brand-logo">Thomas Tran</a>
+                <ul class="right hide-on-med-and-down">
+                    <li>
+                        <a href="/index.html#articles">
+                            <i class="fa fa-arrow-left" aria-hidden="true" id="backBtn"></i> Back to site
+                        </a>
+                    </li>
+                </ul>
+            <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="mdi-navigation-menu"></i></a>
+            </div>
+        </div>
+    </nav>
+</div>
+
+<a href="javascript:" id="return-to-top">
+  <i class="fa fa-chevron-up"></i>
+</a>
+
+<div class="section scrollspy body-section z-depth-4 post">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m10 offset-m1">
+
+              <div class="post-body card-1">
+                <main role="main">
+                  
+                  <div class="title-header">
+                    <h4 class="post-title">Anatomy of a Cron Expression</h4>
+                    <div class="sub-title-header">
+                      <i><time datetime='2021-03-14T00:00:00Z'>
+                        March 14, 2021
+                      </time></i>
+                      <br>
+                      <div>by Thomas Tran</div>
+                    </div>
+                  </div>
+
+                  <br><br>
+
+                  <hr class="hr-custom" style="margin-top: 5px;"/>
+
+                  <div class="article-body">
+                  <p>A cron job is a way to run repetitive tasks on a schedule in Unix-like operating systems. Cron jobs are often used by many apps to run tasks such as sending mass emails, cleaning up data, updating information in a database tables, amongst other important tasks. Almost everything can be automated with cron jobs - well, almost anything!</p>
+<p>In .NET Core, a popular library that can abstract this is called <a href="https://www.quartz-scheduler.net/">Quartz Scheduler</a>. Similar libraries exist for all popular languages, such as <code>django-crontab</code> for Django, and Rake tasks for Ruby on Rails.</p>
+<p>In order to schedule a cron job, you&rsquo;ll need to provide a cron expression in order to tell the operating system how often the job should run. In this article, we&rsquo;ll explore the syntax for the cron expression and hopefully walk away with a better understanding of the cron expression.</p>
+<h2 id="the-cron-expression-does-it-look-alien-to-you">The cron expression: does it look alien to you?</h2>
+<p>This is an example cron expression:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span><span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span> * * *
+</span></span></code></pre></div><p>Does it look alien to you? Because it sure as heck looked alien to me when I first saw one a few years ago! What the above expression is saying is to run the scheduled task every day at 12:00AM, midnight. What a very convoluted way of saying this, right? You may think so, but the computer has no way of understanding human language, so you have to write it in a way that the computer can understand. That&rsquo;s why we have to write a cron expression in the above syntax so that the computer can understand.</p>
+<p>The cron expression has five fields, each represented by an asterisk to determine the date and time of a certain task set to perform repeatedly. These fields are:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>&lt;second&gt; &lt;minute&gt; &lt;hour&gt; &lt;day-of-month&gt; &lt;month&gt; &lt;day-of-week&gt; &lt;year (optional)&gt; 
+</span></span></code></pre></div><ul>
+<li>Seconds - seconds of the minute the task will run, ranging from 0 to 59.</li>
+<li>Minute - minute of the hour the task will run on, ranging from 0 to 59.</li>
+<li>Hour - on what hour the task will run on, ranging from 0 to 23.</li>
+<li>Day of the month - on what day of the month you want the task to run, ranging from 1 to 31.</li>
+<li>Month - on what month will the specified task will run on, ranging from 1 to 12.</li>
+<li>Day of the week - on what day of the week you want a task run, ranging from 0 to 7.</li>
+<li>Year (optional) - during what year this task will run, ranging from 1970 to 2199.</li>
+</ul>
+<p>Furthermore, there are several special characters that may appear in the cron expression:</p>
+<ul>
+<li><code>* (all)</code> - asterisk - this character specifies that the task should happen for every time unit. For every, in the minute field, the asterisk means &ldquo;for every minute&rdquo;.</li>
+<li><code>? (any)</code> - question mark - this character is used in the <code>&lt;day-of-month&gt;</code> and <code>&lt;day-of-week&gt;</code> fields to say that we don&rsquo;t care about what value it is. For instance we we want to run a task on the 20th day of the month, regardless of the day of the week, then we specify a <code>?</code> in the <code>&lt;day-of-the-week</code> field.</li>
+<li><code>- (range)</code> - dash - the dash specifies a value range. For instance <code>0-5</code> in the <code>hour</code> field means any hour between <code>0</code> and <code>5</code>.</li>
+<li><code>, (values)</code> - specifies multiple values. For instance, &ldquo;MON,WED,FRI&rdquo; in <code>&lt;day-of-week&gt;</code> field means on the days &ldquo;Monday, Wednesday, and Friday&rdquo;.</li>
+<li><code>L (last)</code> - means the last of that field. For instance, in the <code>&lt;day-of-week&gt;</code> field, it means the last day of the week. In the <code>&lt;day-of-month&gt;</code> field, it means the last day of the month.</li>
+<li><code>/ (forward slash)</code> - used to specify increments. For example &ldquo;0/15&rdquo; in the seconds field means &ldquo;the seconds 0, 15, 30, and 45&rdquo;. And &ldquo;5/15&rdquo; in the seconds field means &ldquo;the seconds 5, 20, 35, and 50&rdquo;. You can also specify &lsquo;/&rsquo; after the &lsquo;<em>&rsquo; character - in this case &lsquo;</em>&rsquo; is equivalent to having &lsquo;0&rsquo; before the &lsquo;/&rsquo;.</li>
+<li><code>W (weekday)</code> - used to specify the weekday (Monday - Friday) nearest the given day. For instance, <code>15W</code> means the &ldquo;nearest weekday to the 15th of the month&rdquo;.</li>
+</ul>
+<p>There are a couple other special characters, but these are the main ones that you should know.</p>
+<h2 id="special-characters-chart">Special characters chart</h2>
+<p>The following chart specifies which special characters are allowed for each field. This may be useful to you for reference:</p>
+<table>
+<thead>
+<tr>
+<th>Field Order</th>
+<th>Field Name</th>
+<th>Mandatory</th>
+<th>Allowed Values</th>
+<th>Allowed Special Characters</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Seconds</td>
+<td>YES</td>
+<td><code>0-59</code></td>
+<td><code>,-*/</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td>Minutes</td>
+<td>YES</td>
+<td><code>0-59</code></td>
+<td><code>,-*/</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td>Hours</td>
+<td>YES</td>
+<td><code>0-23</code></td>
+<td><code>,-*/</code></td>
+</tr>
+<tr>
+<td>4</td>
+<td>Day of Month</td>
+<td>YES</td>
+<td><code>1-31</code></td>
+<td><code>,-*?/LW</code></td>
+</tr>
+<tr>
+<td>5</td>
+<td>Month</td>
+<td>YES</td>
+<td><code>1-13</code> or <code>JAN-DEC</code></td>
+<td><code>,-*/</code></td>
+</tr>
+<tr>
+<td>6</td>
+<td>Day of week</td>
+<td>YES</td>
+<td><code>1-7</code> or <code>SUN-SAT</code></td>
+<td><code>,-*?/L#</code></td>
+</tr>
+<tr>
+<td>7</td>
+<td>Year</td>
+<td>NO</td>
+<td>Empty, <code>1970-2099</code></td>
+<td><code>,-*/</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="building-basic-cron-expressions">Building basic cron expressions</h2>
+<p>Let&rsquo;s try our hands at building some basic cron expressions.</p>
+<p>As you know, the following expression means to run every second:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>* * * * * *
+</span></span></code></pre></div><p>If we use the values (<code>,</code>) special character in the <code>&lt;second&gt;</code> field, then we can specify the seconds during which a task should run:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span><span style="color:#ae81ff">15</span>,<span style="color:#ae81ff">30</span>,<span style="color:#ae81ff">45</span> * * * * *
+</span></span></code></pre></div><p>The above says that the task should run at 15, 30, and 45 seconds past the minute. So, within the minute, the task will run 3 times.</p>
+<p>Another expression we can use is</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span><span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span> * * * *
+</span></span></code></pre></div><p>which tells the task to run at second 0, minute 0, every hour. Basically, it&rsquo;s saying telling the task to run every hour, on the dot.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span><span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span> * * *
+</span></span></code></pre></div><p>The above expression says to run the task at 0 second, 0 minute, 0 hour every day of the month, every month, and every day of the year. So essentially it&rsquo;s telling the task to run every day at 12:00AM (midnight).</p>
+<p>Let&rsquo;s look at another basic expression:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span><span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">12</span> ? * SAT
+</span></span></code></pre></div><p>The above expression says to run the task at 0 second, 0 minute, at the 12th hour, any day of the month (indicated by the <code>?</code> special character), every month, on Saturday only. So, basically, it&rsquo;s running the task every Saturday at noon.</p>
+<h2 id="advanced-cron-expressions">Advanced cron expressions</h2>
+<p>The above cron expressions will most likely be sufficient for the majority of cases. However, there will be times when we need more advanced cron expressions to suit our needs. Now that we&rsquo;ve gotten a grasp onto the basic cron expressions, let&rsquo;s try our hands at those advanced ones!</p>
+<p>What do you suppose the following expression means?</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span><span style="color:#ae81ff">0</span> <span style="color:#ae81ff">59</span> <span style="color:#ae81ff">23</span> <span style="color:#ae81ff">31</span> <span style="color:#ae81ff">12</span> ?
+</span></span></code></pre></div><p>Let&rsquo;s break it down. It&rsquo;s telling us that the task will run at second 0, minute 59, hour 23, day 31, month 12, any day of the week. So, ignoring the the day of the week, this task will run at the last minute of the last month of the year, and will execute at 11:59pm on December 31st, one minute before the new year! Cool, huh?</p>
+<p>The following expression is another synonym for the one above:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span><span style="color:#ae81ff">0</span> <span style="color:#ae81ff">59</span> <span style="color:#ae81ff">23</span> L <span style="color:#ae81ff">12</span> ?
+</span></span></code></pre></div><p>It&rsquo;s telling us that the task will run on the last day of the month (indicated by the special character <code>L</code>) in December at 11:59pm, which is the same as the other expression we&rsquo;ve seen before.</p>
+<p>What about this expression? What does it mean?</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span><span style="color:#ae81ff">0</span> */<span style="color:#ae81ff">15</span> */<span style="color:#ae81ff">6</span> ? * <span style="color:#ae81ff">2</span>-<span style="color:#ae81ff">6</span>
+</span></span></code></pre></div><p>This expression is telling us that the task will run at second 0, every 15 minutes starting at minute 0, every 6 hours starting at hour 0, any day of the month, every month, but only on the second day of the week through the sixth day of the week. In other words, it&rsquo;s saying that the task will run at the following times Monday through Friday:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span><span style="color:#ae81ff">0</span><span style="color:#960050;background-color:#1e0010">:</span>00am, <span style="color:#ae81ff">00</span><span style="color:#960050;background-color:#1e0010">:</span>15am, <span style="color:#ae81ff">00</span><span style="color:#960050;background-color:#1e0010">:</span>30am, <span style="color:#ae81ff">00</span><span style="color:#960050;background-color:#1e0010">:</span>45am
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">06</span><span style="color:#960050;background-color:#1e0010">:</span>00am, <span style="color:#ae81ff">06</span><span style="color:#960050;background-color:#1e0010">:</span>15am, <span style="color:#ae81ff">06</span><span style="color:#960050;background-color:#1e0010">:</span>30am, <span style="color:#ae81ff">06</span><span style="color:#960050;background-color:#1e0010">:</span>45am
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">12</span><span style="color:#960050;background-color:#1e0010">:</span>00pm, <span style="color:#ae81ff">12</span><span style="color:#960050;background-color:#1e0010">:</span>15pm, <span style="color:#ae81ff">12</span><span style="color:#960050;background-color:#1e0010">:</span>30pm, <span style="color:#ae81ff">12</span><span style="color:#960050;background-color:#1e0010">:</span>45pm
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">18</span><span style="color:#960050;background-color:#1e0010">:</span>00pm, <span style="color:#ae81ff">18</span><span style="color:#960050;background-color:#1e0010">:</span>15pm, <span style="color:#ae81ff">18</span><span style="color:#960050;background-color:#1e0010">:</span>30pm, <span style="color:#ae81ff">18</span><span style="color:#960050;background-color:#1e0010">:</span>45pm
+</span></span></code></pre></div><p>Cool, huh?</p>
+<p>I hope that, armed with the knowledge of the anatomy of a cron expression, that you will be empowered to create special tasks that will be useful to you and others!</p>
+
+                  </div>
+
+                  
+                </main>
+              </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="page-footer" id="contact_me">
+  <div class="container">
+    <div class="row">
+      <div class="col l6 s12">
+        <h5 class="white-text custom-h5">Contact</h5>
+        <p>
+            <div class="light">
+                Please send all project requests and job opportunities to <a class="footer-link" href="mailto:tranindigo@gmail.com">tranindigo@gmail.com</a>. I hope to hear from you!
+            </div>
+
+            <br />
+            <div class="left">
+              <div class="center">
+              Like my work?&nbsp;&nbsp;
+              <script type='text/javascript' src='https://ko-fi.com/widgets/widget_2.js'></script><script type ='text/javascript'>kofiwidget2.init('Buy Me a Coffee', '#daad86', 'A540JDN');kofiwidget2.draw();</script> 
+            </div>
+            </div>
+        </p>
+      </div>
+      <div class="col l4 offset-l2 s12">
+        <h5 class="white-text custom-h5">Links</h5>
+        <ul class="footer-list">
+            <li>
+              <a class="" href="mailto:tranindigo@gmail.com">
+                  <i class="small fa fa-envelope-o"></i>&emsp;E-mail
+              </a>
+            </li>
+            <li>
+              <a class="" href="https://github.com/tranindigo">
+                  <i class="small fa fa-github-square"></i>&emsp;Github
+              </a>
+            </li>
+
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="footer-copyright">
+    <div class="container">
+      All rights reserved Thomas Tran, <script>document.write(new Date().getFullYear())</script>.
+    <a class="grey-text text-lighten-4 right" href="#!"></a>
+    </div>
+  </div>
+</footer>
+
+</div>
+
+
+<script type="text/javascript" src="/js/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="/js/materialize.min.js"></script>
+<script type="text/javascript" src="/js/modernizr.js"></script>
+<script type="text/javascript" src='/js/scrollReveal.min.js'></script>
+<script type="text/javascript" src='/js/footer-reveal.min.js'></script>
+<script type="text/javascript" src='/js/grid.js'></script>
+
+<script type="text/javascript" src="/js/init.js"></script>
+<script>
+  $(function() {
+    Grid.init();
+  });
+</script>
+<script>
+  window.sr = new scrollReveal();
+</script>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-142287578-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-142287578-1');
+</script>
+
+</body>
+</html>
