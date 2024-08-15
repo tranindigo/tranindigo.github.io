@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
+    <meta name="theme-color" content="#2196F3">
+    <title>Pagination Strategies in Elasticsearch</title>
+
+    <link href='https://fonts.googleapis.com/css?family=Poiret+One' rel='stylesheet' type='text/css'>
+
+    
+    <link href="/css/font-awesome.min.css" type="text/css" rel="stylesheet">
+    <link href="/css/materialize.min.css" type="text/css" rel="stylesheet">
+    <link href="/css/grid.css" type="text/css" rel="stylesheet">
+    <link href="/css/style.css?v=0.0.1" type="text/css" rel="stylesheet">
+    
+    
+    <link href="https://tranindigo.github.io/sass/post_style.css" type="text/css" rel="stylesheet">
+
+</head>
+<body id="top" class="scrollspy">
+
+
+<div id="loader-wrapper">
+    <div id="loader"></div>
+ 
+    <div class="loader-section section-left"></div>
+    <div class="loader-section section-right"></div>
+ 
+</div>
+
+<div class="wrapper">
+
+
+ <div class="navbar-fixed">
+    <nav id="nav_f" class="default_color" role="navigation">
+        <div class="container-custom">
+            <div class="nav-wrapper">
+            <a href="/index.html" id="logo-container" class="brand-logo">Thomas Tran</a>
+                <ul class="right hide-on-med-and-down">
+                    <li>
+                        <a href="/index.html#articles">
+                            <i class="fa fa-arrow-left" aria-hidden="true" id="backBtn"></i> Back to site
+                        </a>
+                    </li>
+                </ul>
+            <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="mdi-navigation-menu"></i></a>
+            </div>
+        </div>
+    </nav>
+</div>
+
+<a href="javascript:" id="return-to-top">
+  <i class="fa fa-chevron-up"></i>
+</a>
+
+<div class="section scrollspy body-section z-depth-4 post">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m10 offset-m1">
+
+              <div class="post-body card-1">
+                <main role="main">
+                  
+                  <div class="title-header">
+                    <h4 class="post-title">Pagination Strategies in Elasticsearch</h4>
+                    <div class="sub-title-header">
+                      <i><time datetime='2021-08-05T08:39:00-05:00'>
+                        August 05, 2021
+                      </time></i>
+                      <br>
+                      <div>by Thomas Tran</div>
+                    </div>
+                  </div>
+
+                  <br><br>
+
+                  <hr class="hr-custom" style="margin-top: 5px;"/>
+
+                  <div class="article-body">
+                  <p>In this article, we&rsquo;ll talk about pagination in Elasticsearch (ES) and strategies to perform deep pagination and aggregations of large datasets beyond the default 10,000 document limit that ES imposes for pagination.</p>
+<h3 id="fromsize-pagination">From/Size Pagination</h3>
+<p>If you need to paginate with less than 10,000 documents, then you should use the standard from/size pagination strategy. All you have to do is pass the parameters &ldquo;from&rdquo; and &ldquo;size&rdquo; in your request body into the Search API:</p>
+<p>Request URL: <code>POST /index-name/_search</code></p>
+<p>Request Body:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;query&#34;</span>: { },
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;size&#34;</span>: <span style="color:#ae81ff">10</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;from&#34;</span>: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>This will return 10 results from the beginning.</p>
+<p>You can use the from/size pagination strategy as long as <code>from + size &lt;= 10000</code>. However, if you go above it, like in the example below:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;query&#34;</span>: { },
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;size&#34;</span>: <span style="color:#ae81ff">10</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;from&#34;</span>: <span style="color:#ae81ff">9991</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>&hellip; you will get the following error:</p>
+<pre tabindex="0"><code>Result window is too large, from + size must be less than or equal to: [10000] but was [10001].
+</code></pre><p>You can override this limit by changing the <code>[index.max_result_window]</code> index level setting. But beware, this setting is there for a reason.  Elasticsearch has to parse the query, build the search context, distribute the query to applicable shards, collate the results, skip past <code>$offset</code> items, then read out <code>$limit</code> items and destroy the search context <em>for each page</em> which means that the deeper we paginate, each page is more expensive than the page before it. So what I mean by all of this is that you should not be changing <code>[index.max_result_window]</code> from its default.</p>
+<h3 id="deep-pagination-using-the-scroll-api">Deep Pagination using the Scroll API</h3>
+<p>One strategy to page beyond 10,000 results is to use the Scroll API, which returns one page at a time. Each time you call the Scroll API, it will retrieve the next page in your results. To implement deep paging, we will repeatedly &ldquo;scroll&rdquo; until we reach the page that the user wants and then return that page.</p>
+<p>To do this, you&rsquo;ll need to make an initial call to the Search API with the query parameter <code>?scroll=1m</code>, which will tell the API to return a <code>_scoll_id</code> that you can use to retrieve the next batch of results.</p>
+<p>Request URL: <code>POST /index-name/_search?scroll=1m</code></p>
+<p>Request Body:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;query&#34;</span>: { },
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;size&#34;</span>: <span style="color:#ae81ff">10</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Notice that the <code>from</code> parameter is not allowed in a scroll context.</p>
+<p>If you want the next batch of results, then all you have to do is pass in the <code>_scroll_id</code> that you received into the Scroll API:</p>
+<p>Request URL: <code>POST /_search/scroll</code></p>
+<p>Request Body:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;scroll&#34;</span>: <span style="color:#e6db74">&#34;1m&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;scroll_id&#34;</span>: <span style="color:#e6db74">&#34;...&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>This will return the next page. Keep calling the Scroll API until you get to your desired page.</p>
+<h3 id="deep-pagination-using-search_after">Deep Pagination Using <code>search_after</code></h3>
+<p>The search_after parameter is a new implementation to paginate large results that circumvents the problem of the Scroll API causing search requests taking large heap memory and time. It works similarly to the Scroll API. But unlike scroll, <code>search_after</code> uses a unique sort value that must be the same every time.</p>
+<p>To start, make a call to <code>POST /index-name/_pit?keep-alive=1m</code> to retrieve a PIT ID, which you&rsquo;ll need to include in you search request:</p>
+<p>Request URL: <code>POST /index-name/_search</code></p>
+<p>Request Body:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;query&#34;</span>: { },
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;size&#34;</span>: <span style="color:#ae81ff">10</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;pit&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;id&#34;</span>: <span style="color:#e6db74">&#34;...&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;keep_alive&#34;</span>: <span style="color:#e6db74">&#34;1m&#34;</span>
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;sort&#34;</span>: [
+</span></span><span style="display:flex;"><span>    {<span style="color:#f92672">&#34;@timestamp&#34;</span>: { <span style="color:#f92672">&#34;order&#34;</span>: <span style="color:#e6db74">&#34;asc&#34;</span> }
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">]</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>You must provide a unique sort value with a tiebreaker field which, by default, is the last value in the &ldquo;sort&rdquo; array. If you do not provide a tiebreaker field, your paged results could miss or duplicate hits.</p>
+<p>By default, all PIT search requests add an implicit sort tiebreaker field called <code>_shard_doc</code>.</p>
+<p>After the initial call, you should make subsequent calls to get the next page of results:</p>
+<p>Request URL: <code>GET /_search</code></p>
+<p>Request Body:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;query&#34;</span>: { },
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;pit&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;id&#34;</span>: <span style="color:#e6db74">&#34;...&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;keep_alive&#34;</span>: <span style="color:#e6db74">&#34;1m&#34;</span>
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;search_after&#34;</span>: [
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;2021-01-01T00:00:00.000Z&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">4294967298</span>
+</span></span><span style="display:flex;"><span>  ],
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;sort&#34;</span>: [
+</span></span><span style="display:flex;"><span>    {<span style="color:#f92672">&#34;@timestamp&#34;</span>: {<span style="color:#f92672">&#34;order&#34;</span>: <span style="color:#e6db74">&#34;asc&#34;</span> }
+</span></span><span style="display:flex;"><span>  <span style="color:#960050;background-color:#1e0010">]</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The <code>search_after</code> field contains the sort values from the previous response! And, of course, you should repeat this request until you reach your desired page!</p>
+
+                  </div>
+
+                  
+                </main>
+              </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="page-footer" id="contact_me">
+  <div class="container">
+    <div class="row">
+      <div class="col l6 s12">
+        <h5 class="white-text custom-h5">Contact</h5>
+        <p>
+            <div class="light">
+                Please send all project requests and job opportunities to <a class="footer-link" href="mailto:tranindigo@gmail.com">tranindigo@gmail.com</a>. I hope to hear from you!
+            </div>
+
+            <br />
+            <div class="left">
+              <div class="center">
+              Like my work?&nbsp;&nbsp;
+              <script type='text/javascript' src='https://ko-fi.com/widgets/widget_2.js'></script><script type ='text/javascript'>kofiwidget2.init('Buy Me a Coffee', '#daad86', 'A540JDN');kofiwidget2.draw();</script> 
+            </div>
+            </div>
+        </p>
+      </div>
+      <div class="col l4 offset-l2 s12">
+        <h5 class="white-text custom-h5">Links</h5>
+        <ul class="footer-list">
+            <li>
+              <a class="" href="mailto:tranindigo@gmail.com">
+                  <i class="small fa fa-envelope-o"></i>&emsp;E-mail
+              </a>
+            </li>
+            <li>
+              <a class="" href="https://github.com/tranindigo">
+                  <i class="small fa fa-github-square"></i>&emsp;Github
+              </a>
+            </li>
+
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="footer-copyright">
+    <div class="container">
+      All rights reserved Thomas Tran, <script>document.write(new Date().getFullYear())</script>.
+    <a class="grey-text text-lighten-4 right" href="#!"></a>
+    </div>
+  </div>
+</footer>
+
+</div>
+
+
+<script type="text/javascript" src="/js/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="/js/materialize.min.js"></script>
+<script type="text/javascript" src="/js/modernizr.js"></script>
+<script type="text/javascript" src='/js/scrollReveal.min.js'></script>
+<script type="text/javascript" src='/js/footer-reveal.min.js'></script>
+<script type="text/javascript" src='/js/grid.js'></script>
+
+<script type="text/javascript" src="/js/init.js"></script>
+<script>
+  $(function() {
+    Grid.init();
+  });
+</script>
+<script>
+  window.sr = new scrollReveal();
+</script>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-142287578-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-142287578-1');
+</script>
+
+</body>
+</html>

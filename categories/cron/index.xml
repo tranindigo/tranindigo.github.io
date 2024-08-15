@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Cron on Thomas Tran Portfolio</title>
+    <link>https://tranindigo.github.io/categories/cron/</link>
+    <description>Recent content in Cron on Thomas Tran Portfolio</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 14 Mar 2021 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://tranindigo.github.io/categories/cron/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Anatomy of a Cron Expression</title>
+      <link>https://tranindigo.github.io/posts/cron-expressions/</link>
+      <pubDate>Sun, 14 Mar 2021 00:00:00 +0000</pubDate>
+      <guid>https://tranindigo.github.io/posts/cron-expressions/</guid>
+      <description>A cron job is a way to run repetitive tasks on a schedule in Unix-like operating systems. Cron jobs are often used by many apps to run tasks such as sending mass emails, cleaning up data, updating information in a database tables, amongst other important tasks. Almost everything can be automated with cron jobs - well, almost anything!&#xA;In .NET Core, a popular library that can abstract this is called Quartz Scheduler.</description>
+    </item>
+  </channel>
+</rss>
