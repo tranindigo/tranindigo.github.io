@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Airflow on Thomas Tran Portfolio</title>
+    <link>https://tranindigo.github.io/tags/airflow/</link>
+    <description>Recent content in Airflow on Thomas Tran Portfolio</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 15 Feb 2025 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://tranindigo.github.io/tags/airflow/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Effortless Workflow Automation with Apache Airflow</title>
+      <link>https://tranindigo.github.io/posts/apache-airflow-basics/</link>
+      <pubDate>Sat, 15 Feb 2025 00:00:00 +0000</pubDate>
+      <guid>https://tranindigo.github.io/posts/apache-airflow-basics/</guid>
+      <description>Workflows are an essential part of many businesses, whether it’s processing data, automating reports, or orchestrating machine learning pipelines. Managing these workflows manually can be time-consuming and error-prone. This is where Apache Airflow comes in.&#xA;Airflow is a powerful, open-source tool that allows you to programmatically create, schedule, and monitor workflows. With Airflow, workflows are defined as code, which means they are easy to manage, version, and share. In this guide, we’ll introduce you to Airflow and walk you through creating your first DAG, the core component of Airflow.</description>
+    </item>
+  </channel>
+</rss>

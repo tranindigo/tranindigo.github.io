@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Kubernetes on Thomas Tran Portfolio</title>
+    <link>https://tranindigo.github.io/categories/kubernetes/</link>
+    <description>Recent content in Kubernetes on Thomas Tran Portfolio</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 15 Aug 2024 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://tranindigo.github.io/categories/kubernetes/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Kubernetes Part 3: Deploying Kubernetes Services with AWS Secrets Store CSI Driver using Helm</title>
+      <link>https://tranindigo.github.io/posts/kubernetes-pt3-deploying-service-aws-csi/</link>
+      <pubDate>Thu, 15 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>https://tranindigo.github.io/posts/kubernetes-pt3-deploying-service-aws-csi/</guid>
+      <description>In this latest installment of my Kubernetes series, we&amp;rsquo;ll use Helm, a handy tool that makes deploying resources in Kubernetes easier and faster. We&amp;rsquo;ll start by deploying a basic NGINX service, a popular and straightforward choice for getting started with Kubernetes clusters. This example will guide you through using Helm to quickly set up a working service in your Kubernetes environment. Additionally, we&amp;rsquo;ll deploy the AWS Secrets Store CSI Driver, which allows your Kubernetes pods to securely retrieve secrets from AWS, adding an extra layer of functionality to your deployment.</description>
+    </item>
+  </channel>
+</rss>
