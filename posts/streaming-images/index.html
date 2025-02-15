@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
+    <meta name="theme-color" content="#2196F3">
+    <title>Streaming Images to AWS S3 Using Ruby on Rails and Multipart/Form-Data</title>
+
+    <link href='https://fonts.googleapis.com/css?family=Poiret+One' rel='stylesheet' type='text/css'>
+
+    
+    <link href="/css/font-awesome.min.css" type="text/css" rel="stylesheet">
+    <link href="/css/materialize.min.css" type="text/css" rel="stylesheet">
+    <link href="/css/grid.css" type="text/css" rel="stylesheet">
+    <link href="/css/style.css?v=0.0.1" type="text/css" rel="stylesheet">
+    
+    
+    <link href="https://tranindigo.github.io/sass/post_style.css" type="text/css" rel="stylesheet">
+
+</head>
+<body id="top" class="scrollspy">
+
+
+<div id="loader-wrapper">
+    <div id="loader"></div>
+ 
+    <div class="loader-section section-left"></div>
+    <div class="loader-section section-right"></div>
+ 
+</div>
+
+<div class="wrapper">
+
+
+ <div class="navbar-fixed">
+    <nav id="nav_f" class="default_color" role="navigation">
+        <div class="container-custom">
+            <div class="nav-wrapper">
+            <a href="/index.html" id="logo-container" class="brand-logo">Thomas Tran</a>
+                <ul class="right hide-on-med-and-down">
+                    <li>
+                        <a href="/index.html#articles">
+                            <i class="fa fa-arrow-left" aria-hidden="true" id="backBtn"></i> Back to site
+                        </a>
+                    </li>
+                </ul>
+            <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="mdi-navigation-menu"></i></a>
+            </div>
+        </div>
+    </nav>
+</div>
+
+<a href="javascript:" id="return-to-top">
+  <i class="fa fa-chevron-up"></i>
+</a>
+
+<div class="section scrollspy body-section z-depth-4 post">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m10 offset-m1">
+
+              <div class="post-body card-1">
+                <main role="main">
+                  
+                  <div class="title-header">
+                    <h4 class="post-title">Streaming Images to AWS S3 Using Ruby on Rails and Multipart/Form-Data</h4>
+                    <div class="sub-title-header">
+                      <i><time datetime='2024-08-08T00:00:00Z'>
+                        August 08, 2024
+                      </time></i>
+                      <br>
+                      <div>by Thomas Tran</div>
+                    </div>
+                  </div>
+
+                  <br><br>
+
+                  <hr class="hr-custom" style="margin-top: 5px;"/>
+
+                  <div class="article-body">
+                  <p>When dealing with image uploads in a web application, handling large files efficiently is crucial. Storing images in memory can lead to significant memory usage, especially with large or numerous files. These large files are waste of server resources, cause unnecessary computation, and if you read them into memory, can have great scalability concerns. Instead, you can stream images directly to AWS S3 using <code>multipart/form-data</code> to avoid memory bloat. This article will walk you through how to achieve this using Ruby on Rails.</p>
+<h2 id="step-by-step-guide">Step-by-Step Guide</h2>
+<h3 id="1-setup-aws-s3">1. Setup AWS S3</h3>
+<p>First, you&rsquo;ll need a way for your application to connect with S3, the destination of your images. First, ensure you have the <code>aws-sdk-s3</code> gem installed and configured in your Rails application.</p>
+<p>Add the gem to your <code>Gemfile</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span>gem <span style="color:#e6db74">&#39;aws-sdk-s3&#39;</span>
+</span></span></code></pre></div><p>Run <code>bundle install</code> to install the gem.</p>
+<p>Configure your AWS credentials in <code>config/initializers/aws.rb</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span><span style="color:#66d9ef">Aws</span><span style="color:#f92672">.</span>config<span style="color:#f92672">.</span>update({
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">region</span>: <span style="color:#e6db74">&#39;your-region&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">credentials</span>: <span style="color:#66d9ef">Aws</span><span style="color:#f92672">::</span><span style="color:#66d9ef">Credentials</span><span style="color:#f92672">.</span>new(<span style="color:#e6db74">&#39;your-access-key-id&#39;</span>, <span style="color:#e6db74">&#39;your-secret-access-key&#39;</span>)
+</span></span><span style="display:flex;"><span>})
+</span></span></code></pre></div><h3 id="2-create-an-s3-client">2. Create an S3 Client</h3>
+<p>Create an S3 client instance to interact with your S3 bucket:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span>s3 <span style="color:#f92672">=</span> <span style="color:#66d9ef">Aws</span><span style="color:#f92672">::</span><span style="color:#66d9ef">S3</span><span style="color:#f92672">::</span><span style="color:#66d9ef">Resource</span><span style="color:#f92672">.</span>new
+</span></span><span style="display:flex;"><span>bucket <span style="color:#f92672">=</span> s3<span style="color:#f92672">.</span>bucket(<span style="color:#e6db74">&#39;your-bucket-name&#39;</span>)
+</span></span></code></pre></div><h3 id="3-handling-multipartform-data">3. Handling Multipart/Form-Data</h3>
+<p>Install the <code>multipart-post</code> gem to handle multipart/form-data:</p>
+<p>Add the gem to your <code>Gemfile</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span>gem <span style="color:#e6db74">&#39;multipart-post&#39;</span>
+</span></span></code></pre></div><p>Run <code>bundle install</code> to install the gem.</p>
+<h3 id="4-streaming-image-to-s3">4. Streaming Image to S3</h3>
+<p>Create a controller action to handle the image upload. Use the <code>multipart-post</code> gem to stream the image directly to S3 without loading it into memory.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span>require <span style="color:#e6db74">&#39;aws-sdk-s3&#39;</span>
+</span></span><span style="display:flex;"><span>require <span style="color:#e6db74">&#39;net/http/post/multipart&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ImagesController</span> <span style="color:#f92672">&lt;</span> <span style="color:#66d9ef">ApplicationController</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">create</span>
+</span></span><span style="display:flex;"><span>    file <span style="color:#f92672">=</span> params<span style="color:#f92672">[</span><span style="color:#e6db74">:file</span><span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>    upload_to_s3(file)
+</span></span><span style="display:flex;"><span>    render <span style="color:#e6db74">json</span>: { <span style="color:#e6db74">message</span>: <span style="color:#e6db74">&#39;Image uploaded successfully&#39;</span> }, <span style="color:#e6db74">status</span>: <span style="color:#e6db74">:ok</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">rescue</span> <span style="color:#f92672">=&gt;</span> e
+</span></span><span style="display:flex;"><span>    render <span style="color:#e6db74">json</span>: { <span style="color:#e6db74">error</span>: e<span style="color:#f92672">.</span>message }, <span style="color:#e6db74">status</span>: <span style="color:#e6db74">:unprocessable_entity</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">private</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">upload_to_s3</span>(file)
+</span></span><span style="display:flex;"><span>    s3 <span style="color:#f92672">=</span> <span style="color:#66d9ef">Aws</span><span style="color:#f92672">::</span><span style="color:#66d9ef">S3</span><span style="color:#f92672">::</span><span style="color:#66d9ef">Resource</span><span style="color:#f92672">.</span>new
+</span></span><span style="display:flex;"><span>    bucket <span style="color:#f92672">=</span> s3<span style="color:#f92672">.</span>bucket(<span style="color:#e6db74">&#39;your-bucket-name&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Create an object for the file</span>
+</span></span><span style="display:flex;"><span>    obj <span style="color:#f92672">=</span> bucket<span style="color:#f92672">.</span>object(file<span style="color:#f92672">.</span>original_filename)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Stream the file to S3</span>
+</span></span><span style="display:flex;"><span>    obj<span style="color:#f92672">.</span>upload_stream <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>write_stream<span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span>      file<span style="color:#f92672">.</span>tempfile<span style="color:#f92672">.</span>open <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>read_stream<span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">IO</span><span style="color:#f92672">.</span>copy_stream(read_stream, write_stream)
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span></code></pre></div><h3 id="5-routing">5. Routing</h3>
+<p>Add a route for the image upload in <code>config/routes.rb</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span><span style="color:#66d9ef">Rails</span><span style="color:#f92672">.</span>application<span style="color:#f92672">.</span>routes<span style="color:#f92672">.</span>draw <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>  resources <span style="color:#e6db74">:images</span>, <span style="color:#e6db74">only</span>: <span style="color:#f92672">[</span><span style="color:#e6db74">:create</span><span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span></code></pre></div><h3 id="6-testing-the-upload">6. Testing the Upload</h3>
+<p>You can test the upload using a tool like <code>curl</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl -F <span style="color:#e6db74">&#34;file=@/path/to/your/image.jpg&#34;</span> http://localhost:3000/images
+</span></span></code></pre></div><h3 id="conclusion">Conclusion</h3>
+<p>By streaming images directly to AWS S3 using <code>multipart/form-data</code> in Ruby on Rails, you can handle large file uploads efficiently without consuming excessive memory. This approach ensures that your application is scalable, even when dealing with a large number of image uploads.</p>
+
+                  </div>
+
+                  
+                </main>
+              </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="page-footer" id="contact_me">
+  <div class="container">
+    <div class="row">
+      <div class="col l6 s12">
+        <h5 class="white-text custom-h5">Contact</h5>
+        <p>
+            <div class="light">
+                Please send all project requests and job opportunities to <a class="footer-link" href="mailto:tranindigo@gmail.com">tranindigo@gmail.com</a>. I hope to hear from you!
+            </div>
+
+            <br />
+            <div class="left">
+              <div class="center">
+              Like my work?&nbsp;&nbsp;
+              <script type='text/javascript' src='https://ko-fi.com/widgets/widget_2.js'></script><script type ='text/javascript'>kofiwidget2.init('Buy Me a Coffee', '#daad86', 'A540JDN');kofiwidget2.draw();</script> 
+            </div>
+            </div>
+        </p>
+      </div>
+      <div class="col l4 offset-l2 s12">
+        <h5 class="white-text custom-h5">Links</h5>
+        <ul class="footer-list">
+            <li>
+              <a class="" href="mailto:tranindigo@gmail.com">
+                  <i class="small fa fa-envelope-o"></i>&emsp;E-mail
+              </a>
+            </li>
+            <li>
+              <a class="" href="https://github.com/tranindigo">
+                  <i class="small fa fa-github-square"></i>&emsp;Github
+              </a>
+            </li>
+
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="footer-copyright">
+    <div class="container">
+      All rights reserved Thomas Tran, <script>document.write(new Date().getFullYear())</script>.
+    <a class="grey-text text-lighten-4 right" href="#!"></a>
+    </div>
+  </div>
+</footer>
+
+</div>
+
+
+<script type="text/javascript" src="/js/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="/js/materialize.min.js"></script>
+<script type="text/javascript" src="/js/modernizr.js"></script>
+<script type="text/javascript" src='/js/scrollReveal.min.js'></script>
+<script type="text/javascript" src='/js/footer-reveal.min.js'></script>
+<script type="text/javascript" src='/js/grid.js'></script>
+
+<script type="text/javascript" src="/js/init.js"></script>
+<script>
+  $(function() {
+    Grid.init();
+  });
+</script>
+<script>
+  window.sr = new scrollReveal();
+</script>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-142287578-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-142287578-1');
+</script>
+
+</body>
+</html>
